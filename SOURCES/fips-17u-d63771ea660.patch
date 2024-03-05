@@ -116,7 +116,7 @@ index 00000000000..f48fc7f7e80
 +  AC_SUBST(NSS_LIBDIR)
 +])
 diff --git a/make/autoconf/libraries.m4 b/make/autoconf/libraries.m4
-index 366682cf044..1f8d782f419 100644
+index 62db5b16c31..f0bb4333fc9 100644
 --- a/make/autoconf/libraries.m4
 +++ b/make/autoconf/libraries.m4
 @@ -33,6 +33,7 @@ m4_include([lib-std.m4])
@@ -3496,7 +3496,7 @@ index 00000000000..f8d505ca815
 +}
 \ No newline at end of file
 diff --git a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java
-index 0736ce997e4..0a937fef377 100644
+index 39bd783dd25..1146e7f9d80 100644
 --- a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java
 +++ b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java
 @@ -37,6 +37,8 @@ import javax.crypto.*;
@@ -3529,19 +3529,21 @@ index 0736ce997e4..0a937fef377 100644
          boolean extractKeyInfo = (!DISABLE_NATIVE_KEYS_EXTRACTION && isNSS &&
                  extractable && !tokenObject);
          this.keyIDHolder = new NativeKeyHolder(this, keyID, session,
-@@ -383,7 +386,9 @@ abstract class P11Key implements Key, Length {
-             new CK_ATTRIBUTE(CKA_SENSITIVE),
-             new CK_ATTRIBUTE(CKA_EXTRACTABLE),
+@@ -395,8 +398,10 @@ abstract class P11Key implements Key, Length {
+                     new CK_ATTRIBUTE(CKA_EXTRACTABLE),
          });
--        if (attributes[1].getBoolean() || (attributes[2].getBoolean() == false)) {
+ 
+-        boolean keySensitive = (attrs[0].getBoolean() ||
+-                attrs[1].getBoolean() || !attrs[2].getBoolean());
 +        boolean exportable = plainKeySupportEnabled && !algorithm.equals("DH");
-+        if (!exportable && (attributes[1].getBoolean() ||
-+                (attributes[2].getBoolean() == false))) {
-             return new P11PrivateKey
-                 (session, keyID, algorithm, keyLength, attributes);
-         } else {
-@@ -465,7 +470,8 @@ abstract class P11Key implements Key, Length {
-         }
++        boolean keySensitive = (!exportable &&
++            (attrs[0].getBoolean() ||
++             attrs[1].getBoolean() || !attrs[2].getBoolean()));
+ 
+         switch (algorithm) {
+         case "RSA":
+@@ -451,7 +456,8 @@ abstract class P11Key implements Key, Length {
+ 
          public String getFormat() {
              token.ensureValid();
 -            if (sensitive || !extractable || (isNSS && tokenObject)) {
@@ -4527,7 +4529,7 @@ index aa35e8fa668..1855e5631bd 100644
                  debug.println("logout succeeded");
              }
 diff --git a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/Token.java b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/Token.java
-index 9858a5faedf..e63585486d9 100644
+index 1f94fe3e18a..99eec2114e4 100644
 --- a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/Token.java
 +++ b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/Token.java
 @@ -33,6 +33,7 @@ import java.lang.ref.*;
