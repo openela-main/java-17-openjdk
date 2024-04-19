@@ -322,12 +322,12 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 10
+%global updatever 11
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
 # and this it is better to change it here, on single place
-%global buildjdkver 17
+%global buildjdkver %{featurever}
 # We don't add any LTS designator for STS packages (Fedora and EPEL).
 # We need to explicitly exclude EPEL as it would have the %%{rhel} macro defined.
 %if 0%{?rhel} && !0%{?epel}
@@ -377,11 +377,11 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver        7
+%global buildver        9
 # rpmrelease numbering must start at 2 to be later than the 8.6 RPM
 %global rpmrelease      2
 # Settings used by the portable build
-%global portablerelease 1
+%global portablerelease 3
 %global portablesuffix el8
 %global portablebuilddir /builddir/build/BUILD
 
@@ -1124,8 +1124,9 @@ Requires: ca-certificates
 # Require javapackages-filesystem for ownership of /usr/lib/jvm/ and macros
 Requires: javapackages-filesystem
 # Require zone-info data provided by tzdata-java sub-package
-# 2023c required as of JDK-8305113
-Requires: tzdata-java >= 2023c
+# 2024a required as of JDK-8325150
+# Use 2023d until 2024a is in the buildroot
+Requires: tzdata-java >= 2023d
 # for support of kernel stream control
 # libsctp.so.1 is being `dlopen`ed on demand
 Requires: lksctp-tools%{?_isa}
@@ -1347,9 +1348,6 @@ Patch600: rh1750419-redhat_alt_java.patch
 
 # Ignore AWTError when assistive technologies are loaded
 Patch1:    rh1648242-accessible_toolkit_crash_do_not_break_jvm.patch
-Patch3:    rh649512-remove_uses_of_far_in_jpeg_libjpeg_turbo_1_4_compat_for_jdk10_and_up.patch
-# Depend on pcsc-lite-libs instead of pcsc-lite-devel as this is only in optional repo
-Patch6: rh1684077-openjdk_should_depend_on_pcsc-lite-libs_instead_of_pcsc-lite-devel.patch
 
 # Crypto policy and FIPS support patches
 # Patch is generated from the fips-17u tree at https://github.com/rh-openjdk/jdk/tree/fips-17u
@@ -1394,13 +1392,16 @@ Patch6: rh1684077-openjdk_should_depend_on_pcsc-lite-libs_instead_of_pcsc-lite-d
 # test/jdk/sun/security/pkcs11/fips/VerifyMissingAttributes.java: fixed jtreg main class (#27)
 # RH1940064: Enable XML Signature provider in FIPS mode (#24)
 # RH2173781: Avoid calling C_GetInfo() too early, before cryptoki is initialized (#26)
-Patch1001: fips-17u-%{fipsver}.patch
+Patch1001: fips-%{featurever}u-%{fipsver}.patch
 
 #############################################
 #
 # OpenJDK patches in need of upstreaming
 #
 #############################################
+
+# Depend on pcsc-lite-libs instead of pcsc-lite-devel as this is only in optional repo
+Patch6: rh1684077-openjdk_should_depend_on_pcsc-lite-libs_instead_of_pcsc-lite-devel.patch
 
 #############################################
 #
@@ -1455,8 +1456,9 @@ BuildRequires: java-%{featurever}-openjdk-portable-misc = %{epoch}:%{version}-%{
 %ifarch %{zero_arches}
 BuildRequires: libffi-devel
 %endif
-# 2023c required as of JDK-8305113
-BuildRequires: tzdata-java >= 2023c
+# 2024a required as of JDK-8325150
+# Use 2023d until 2024a is in the buildroot
+BuildRequires: tzdata-java >= 2023d
 # Earlier versions have a bug in tree vectorization on PPC
 BuildRequires: gcc >= 4.8.3-8
 
@@ -1843,11 +1845,21 @@ sh %{SOURCE12} %{top_level_dir_name}
 %endif
 
 # Patch the JDK
-# -P N: apply patch number N, same as passing N as a positional argument on rpm >= 4.18
-# -p N: strip N leading slashes from paths
 pushd %{top_level_dir_name}
+# This syntax is deprecated:
+#    %patchN [...]
+# and should be replaced with:
+#    %patch -PN [...]
+# For example:
+#    %patch1001 -p1
+# becomes:
+#    %patch -P1001 -p1
+# The replacement format suggested by recent (circa Fedora 38) RPM
+# deprecation messages:
+#    %patch N [...]
+# is not backward-compatible with prior (circa RHEL-8) versions of
+# rpmbuild.
 %patch -P1 -p1
-%patch -P3 -p1
 %patch -P6 -p1
 # Add crypto policy and FIPS support
 %patch -P1001 -p1
@@ -2473,6 +2485,46 @@ require "copy_jdk_configs.lua"
 %endif
 
 %changelog
+* Wed Apr 10 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.11.0.9-2
+- Update to jdk-17.0.11+9 (GA)
+- Add openjdk-17.0.11+9.tar.xz to .gitignore
+- Sync java-17-openjdk-portable.specfile from openjdk-portable-rhel-8
+- Update buildver from 7 to 9
+- Update portablerelease from 1 to 3
+- Change is_ga from 0 to 1 to enable GA mode for release
+- Update tzdata Requires comment to mention that 2024a is not yet in the buildroot
+- Update tzdata BuildRequires comment to mention that 2024a is not yet in the buildroot
+- Update tzdata BuildRequires fro 2023c to 2023d
+- Update sources from openjdk-17.0.11+7-ea.tar.xz to openjdk-17.0.11+9.tar.xz
+- Resolves: RHEL-27137
+- ** This tarball is embargoed until 2024-04-16 @ 1pm PT. **
+
+* Thu Mar 28 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.11.0.7-0.2.ea
+- Update to jdk-17.0.11+7 (EA)
+- Sync java-17-openjdk-portable.specfile
+- Sync java-17-openjdk-portable.specfile again to mention OPENJDK-2730
+- Related: RHEL-27137
+
+* Thu Mar 14 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.11.0.6-0.2.ea
+- Update to jdk-17.0.11+6 (EA)
+- Sync java-17-openjdk-portable.specfile
+- Update buildjdkver to match the featurever
+- Use featurever macro to specify fips patch
+- Explain patchN syntax situation in a comment
+- generate_source_tarball.sh: Fix whitespace
+- generate_source_tarball.sh: Skip -ga tags
+- generate_source_tarball.sh: Get -ea suffix from version-numbers.conf
+- generate_source_tarball.sh: Use git archive to generate tarball
+- generate_source_tarball.sh: Update version in comment
+- generate_source_tarball.sh: Remove trailing period in echo
+- generate_source_tarball.sh: Add indentation instructions for Emacs
+- Require tzdata 2023d (JDK-8322725)
+- generate_source_tarball.sh: Add license
+- openjdk_news.sh: Use grep -E instead of egrep
+- Remove RH1649512 patch for libjpeg-turbo FAR macro
+- Move pcsc-lite-libs patch to in-need-of-upstreaming section
+- Related: RHEL-27137
+
 * Thu Jan 11 2024 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.10.0.7-1
 - Update to jdk-17.0.10+7 (GA)
 - Sync the copy of the portable specfile with the latest update
