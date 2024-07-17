@@ -136,10 +136,10 @@ index 62db5b16c31..f0bb4333fc9 100644
    BASIC_JDKLIB_LIBS=""
    if test "x$TOOLCHAIN_TYPE" != xmicrosoft; then
 diff --git a/make/autoconf/spec.gmk.in b/make/autoconf/spec.gmk.in
-index 537c3e3043c..16ad3df6f09 100644
+index 807ba27589b..47cb6b7753b 100644
 --- a/make/autoconf/spec.gmk.in
 +++ b/make/autoconf/spec.gmk.in
-@@ -841,6 +841,11 @@ INSTALL_SYSCONFDIR=@sysconfdir@
+@@ -844,6 +844,11 @@ INSTALL_SYSCONFDIR=@sysconfdir@
  # Libraries
  #
  
@@ -2508,7 +2508,7 @@ index 00000000000..dc8bc72fccb
 +    }
 +}
 diff --git a/src/java.base/share/conf/security/java.security b/src/java.base/share/conf/security/java.security
-index 9be02033877..4dd055a9ccf 100644
+index 8f6e1e12a7e..2726391bcea 100644
 --- a/src/java.base/share/conf/security/java.security
 +++ b/src/java.base/share/conf/security/java.security
 @@ -82,6 +82,17 @@ security.provider.tbd=Apple
@@ -2606,10 +2606,10 @@ index 00000000000..55bbba98b7a
 +attributes(*,CKO_SECRET_KEY,CKK_GENERIC_SECRET)={ CKA_SIGN=true }
 +
 diff --git a/src/java.base/share/lib/security/default.policy b/src/java.base/share/lib/security/default.policy
-index b22f26947af..02bea84e210 100644
+index 4e3c326cb2f..c39faee2f43 100644
 --- a/src/java.base/share/lib/security/default.policy
 +++ b/src/java.base/share/lib/security/default.policy
-@@ -121,6 +121,7 @@ grant codeBase "jrt:/jdk.charsets" {
+@@ -123,6 +123,7 @@ grant codeBase "jrt:/jdk.charsets" {
  grant codeBase "jrt:/jdk.crypto.ec" {
      permission java.lang.RuntimePermission
                     "accessClassInPackage.sun.security.*";
@@ -2617,7 +2617,7 @@ index b22f26947af..02bea84e210 100644
      permission java.lang.RuntimePermission "loadLibrary.sunec";
      permission java.security.SecurityPermission "putProviderProperty.SunEC";
      permission java.security.SecurityPermission "clearProviderProperties.SunEC";
-@@ -130,6 +131,7 @@ grant codeBase "jrt:/jdk.crypto.ec" {
+@@ -132,6 +133,7 @@ grant codeBase "jrt:/jdk.crypto.ec" {
  grant codeBase "jrt:/jdk.crypto.cryptoki" {
      permission java.lang.RuntimePermission
                     "accessClassInPackage.com.sun.crypto.provider";
@@ -2625,7 +2625,7 @@ index b22f26947af..02bea84e210 100644
      permission java.lang.RuntimePermission "accessClassInPackage.jdk.internal.misc";
      permission java.lang.RuntimePermission
                     "accessClassInPackage.sun.security.*";
-@@ -140,6 +142,8 @@ grant codeBase "jrt:/jdk.crypto.cryptoki" {
+@@ -142,6 +144,8 @@ grant codeBase "jrt:/jdk.crypto.cryptoki" {
      permission java.util.PropertyPermission "os.name", "read";
      permission java.util.PropertyPermission "os.arch", "read";
      permission java.util.PropertyPermission "jdk.crypto.KeyAgreement.legacyKDF", "read";
@@ -3496,7 +3496,7 @@ index 00000000000..f8d505ca815
 +}
 \ No newline at end of file
 diff --git a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java
-index 39bd783dd25..1146e7f9d80 100644
+index d12244337a5..f2e8e4094c8 100644
 --- a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java
 +++ b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java
 @@ -37,6 +37,8 @@ import javax.crypto.*;
@@ -3518,31 +3518,21 @@ index 39bd783dd25..1146e7f9d80 100644
      private static final long serialVersionUID = -2575874101938349339L;
  
      private static final String PUBLIC = "public";
-@@ -139,9 +144,7 @@ abstract class P11Key implements Key, Length {
-         this.tokenObject = tokenObject;
-         this.sensitive = sensitive;
-         this.extractable = extractable;
--        char[] tokenLabel = this.token.tokenInfo.label;
--        isNSS = (tokenLabel[0] == 'N' && tokenLabel[1] == 'S'
--                && tokenLabel[2] == 'S');
-+        isNSS = P11Util.isNSS(this.token);
-         boolean extractKeyInfo = (!DISABLE_NATIVE_KEYS_EXTRACTION && isNSS &&
-                 extractable && !tokenObject);
-         this.keyIDHolder = new NativeKeyHolder(this, keyID, session,
-@@ -395,8 +398,10 @@ abstract class P11Key implements Key, Length {
+@@ -393,9 +398,10 @@ abstract class P11Key implements Key, Length {
                      new CK_ATTRIBUTE(CKA_EXTRACTABLE),
          });
  
--        boolean keySensitive = (attrs[0].getBoolean() ||
--                attrs[1].getBoolean() || !attrs[2].getBoolean());
+-        boolean keySensitive =
+-                (attrs[0].getBoolean() && P11Util.isNSS(session.token)) ||
+-                attrs[1].getBoolean() || !attrs[2].getBoolean();
 +        boolean exportable = plainKeySupportEnabled && !algorithm.equals("DH");
 +        boolean keySensitive = (!exportable &&
-+            (attrs[0].getBoolean() ||
++            ((attrs[0].getBoolean() && P11Util.isNSS(session.token)) ||
 +             attrs[1].getBoolean() || !attrs[2].getBoolean()));
  
          switch (algorithm) {
          case "RSA":
-@@ -451,7 +456,8 @@ abstract class P11Key implements Key, Length {
+@@ -450,7 +456,8 @@ abstract class P11Key implements Key, Length {
  
          public String getFormat() {
              token.ensureValid();
@@ -3973,7 +3963,7 @@ index 8d1b8ccb0ae..7ea9b4c5e7f 100644
      }
  
 diff --git a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Util.java b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Util.java
-index 262cfc062ad..72b64f72c0a 100644
+index cabee449346..72b64f72c0a 100644
 --- a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Util.java
 +++ b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Util.java
 @@ -27,6 +27,10 @@ package sun.security.pkcs11;
@@ -3987,7 +3977,7 @@ index 262cfc062ad..72b64f72c0a 100644
  
  /**
   * Collection of static utility methods.
-@@ -40,10 +44,106 @@ public final class P11Util {
+@@ -40,6 +44,93 @@ public final class P11Util {
  
      private static volatile Provider sun, sunRsaSign, sunJce;
  
@@ -4081,19 +4071,6 @@ index 262cfc062ad..72b64f72c0a 100644
      private P11Util() {
          // empty
      }
- 
-+    static boolean isNSS(Token token) {
-+        char[] tokenLabel = token.tokenInfo.label;
-+        if (tokenLabel != null && tokenLabel.length >= 3) {
-+            return (tokenLabel[0] == 'N' && tokenLabel[1] == 'S'
-+                    && tokenLabel[2] == 'S');
-+        }
-+        return false;
-+    }
-+
-     static Provider getSunProvider() {
-         Provider p = sun;
-         if (p == null) {
 diff --git a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java
 index aa35e8fa668..1855e5631bd 100644
 --- a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java
