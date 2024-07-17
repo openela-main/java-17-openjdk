@@ -59,6 +59,10 @@
 # The -g flag says to use strip -g instead of full strip on DSOs or EXEs.
 # This fixes detailed NMT and other tools which need minimal debug info.
 # See: https://bugzilla.redhat.com/show_bug.cgi?id=1520879
+# To silence rpminspect's .symtab warnings due to this option, our
+# rpminspect.yaml needs:
+# debuginfo:
+#     debuginfo_sections: .debug_info .gdb_index
 %global _find_debuginfo_opts -g
 
 # With LTO flags enabled, debuginfo checks fail for some reason. Disable
@@ -103,7 +107,7 @@
 # you can list those files, with appropriate sections: cat *.spec | grep -e --install -e --slave -e post_ -e alternatives
 # TODO - fix those hardcoded lists via single list
 # Those files must *NOT* be ghosted for *slowdebug* packages
-# FIXME - if you are moving jshell or jlink or similar, always modify all three sections
+# NOTE - if you are moving jshell or jlink or similar, always modify all three sections
 # you can check via headless and devels:
 #    rpm -ql --noghost java-11-openjdk-headless-11.0.1.13-8.fc29.x86_64.rpm  | grep bin
 # == rpm -ql           java-11-openjdk-headless-slowdebug-11.0.1.13-8.fc29.x86_64.rpm  | grep bin
@@ -322,7 +326,7 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 11
+%global updatever 12
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
@@ -344,11 +348,11 @@
 # Define what url should JVM offer in case of a crash report
 # order may be important, epel may have rhel declared
 %if 0%{?epel}
-%global oj_vendor_bug_url  https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora%20EPEL&component=%{name}&version=epel%{epel}
+%global oj_vendor_bug_url  https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora%20EPEL&component=%{component}&version=epel%{epel}
 %else
 %if 0%{?fedora}
 # Does not work for rawhide, keeps the version field empty
-%global oj_vendor_bug_url  https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora&component=%{name}&version=%{fedora}
+%global oj_vendor_bug_url  https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora&component=%{component}&version=%{fedora}
 %else
 %if 0%{?rhel}
 %global oj_vendor_bug_url https://access.redhat.com/support/cases/
@@ -362,7 +366,7 @@
 # Define IcedTea version used for SystemTap tapsets and desktop file
 %global icedteaver      6.0.0pre00-c848b93a8598
 # Define current Git revision for the FIPS support patches
-%global fipsver d63771ea660
+%global fipsver e893be00150
 %global javaver         %{featurever}
 %global newjavaver %{featurever}.%{interimver}.%{updatever}.%{patchver}
 
@@ -377,11 +381,11 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver        9
+%global buildver        7
 # rpmrelease numbering must start at 2 to be later than the 8.6 RPM
 %global rpmrelease      2
 # Settings used by the portable build
-%global portablerelease 3
+%global portablerelease 1
 %global portablesuffix el8
 %global portablebuilddir /builddir/build/BUILD
 
@@ -1125,8 +1129,7 @@ Requires: ca-certificates
 Requires: javapackages-filesystem
 # Require zone-info data provided by tzdata-java sub-package
 # 2024a required as of JDK-8325150
-# Use 2023d until 2024a is in the buildroot
-Requires: tzdata-java >= 2023d
+Requires: tzdata-java >= 2024a
 # for support of kernel stream control
 # libsctp.so.1 is being `dlopen`ed on demand
 Requires: lksctp-tools%{?_isa}
@@ -1405,9 +1408,13 @@ Patch6: rh1684077-openjdk_should_depend_on_pcsc-lite-libs_instead_of_pcsc-lite-d
 
 #############################################
 #
-# OpenJDK patches appearing in 17.0.10
+# OpenJDK patches which missed last update
 #
 #############################################
+
+# https://github.com/openjdk/jdk17u-dev/commit/859dda14f3f0d90294899812f5d34ea2e952a3df
+# Remove after next upstream update.
+Patch7: 0001-8332174-Remove-2-unpaired-RLO-Unicode-characters-in-.patch
 
 # Currently empty
 
@@ -1457,8 +1464,7 @@ BuildRequires: java-%{featurever}-openjdk-portable-misc = %{epoch}:%{version}-%{
 BuildRequires: libffi-devel
 %endif
 # 2024a required as of JDK-8325150
-# Use 2023d until 2024a is in the buildroot
-BuildRequires: tzdata-java >= 2023d
+BuildRequires: tzdata-java >= 2024a
 # Earlier versions have a bug in tree vectorization on PPC
 BuildRequires: gcc >= 4.8.3-8
 
@@ -1474,6 +1480,7 @@ BuildRequires: harfbuzz-devel
 BuildRequires: lcms2-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
+BuildRequires: zlib-devel
 %else
 # Version in src/java.desktop/share/native/libfreetype/include/freetype/freetype.h
 Provides: bundled(freetype) = 2.13.0
@@ -1481,12 +1488,14 @@ Provides: bundled(freetype) = 2.13.0
 Provides: bundled(giflib) = 5.2.1
 # Version in src/java.desktop/share/native/libharfbuzz/hb-version.h
 Provides: bundled(harfbuzz) = 7.2.0
-# Version in src/java.desktop/share/native/liblcms/lcms2.h
-Provides: bundled(lcms2) = 2.15.0
+# Version in src/java.desktop/share/legal/lcms.md
+Provides: bundled(lcms2) = 2.16.0
 # Version in src/java.desktop/share/native/libjavajpeg/jpeglib.h
 Provides: bundled(libjpeg) = 6b
 # Version in src/java.desktop/share/native/libsplashscreen/libpng/png.h
 Provides: bundled(libpng) = 1.6.39
+# Version in src/java.base/share/native/libzip/zlib/zlib.h
+Provides: bundled(zlib) = 1.3.1
 %endif
 
 # this is always built, also during debug-only build
@@ -1861,6 +1870,7 @@ pushd %{top_level_dir_name}
 # rpmbuild.
 %patch -P1 -p1
 %patch -P6 -p1
+%patch -P7 -p1
 # Add crypto policy and FIPS support
 %patch -P1001 -p1
 # nss.cfg PKCS11 support; must come last as it also alters java.security
@@ -1883,7 +1893,7 @@ else
     exit 16
 fi
 if [ "x${UPSTREAM_EA_DESIGNATOR}" != "x%{ea_designator}" ] ; then
-    echo "WARNING: Designator mismatch";
+    echo "ERROR: Designator mismatch";
     echo "Spec file is configured for a %{build_type} build with designator '%{ea_designator}'"
     echo "Upstream version-pre setting is '${UPSTREAM_EA_DESIGNATOR}'";
     exit 17
@@ -2485,6 +2495,80 @@ require "copy_jdk_configs.lua"
 %endif
 
 %changelog
+* Wed Jul 10 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.7-2
+- Update to jdk-17.0.12+7 (GA)
+- Update .gitignore to ignore openjdk-17.0.12+7.tar.xz
+- Sync java-17-openjdk-portable.specfile
+- Set buildver to 7
+- Set portablerelease 1
+- Set is_ga to 1
+- Update sources to openjdk-17.0.12+7.tar.xz
+- Resolves: RHEL-46638
+- Resolves: RHEL-46996
+- ** This tarball is embargoed until 2024-07-16 @ 1pm PT. **
+
+* Tue Jul  9 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.6-0.2.ea
+- Set rpmrelease to 2
+
+* Tue Jul  9 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.6-0.1.ea
+- Set portablerelease to 2
+- Related: RHEL-46638
+- Add debuginfo section to rpminspect.yaml (OPENJDK-2904)
+- Add unicode section to rpminspect.yaml (OPENJDK-2904)
+- Add contents of fips-17u-e893be00150.patch
+
+* Mon Jul  8 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.6-0.1.ea
+- Add upstream patch that removes illegal RLO Unicode characters (JDK-8332174)
+- Sync the copy of the portable specfile with the latest update
+
+* Mon Jul  8 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.6-0.1.ea
+- Delete fips-17u-d63771ea660.patch
+- Add fips-17u-e893be00150.patch
+- Update fipsver to e893be00150
+
+* Mon Jul  8 2024 Anton Bobrov <abobrov@redhat.com> - 1:17.0.12.0.6-0.1.ea
+- generate_source_tarball.sh: Use tar exclude options for VCS files
+- generate_source_tarball.sh: Improve VCS exclusion
+
+* Mon Jul  8 2024 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.12.0.6-0.1.ea
+- generate_source_tarball.sh: Update examples in header for clarity
+- generate_source_tarball.sh: Cleanup message issued when checkout already exists
+- generate_source_tarball.sh: Create directory in TMPDIR when using WITH_TEMP
+- generate_source_tarball.sh: Only add --depth=1 on non-local repositories
+- icedtea_sync.sh: Reinstate from rhel-8.9.0 branch
+- Move maintenance scripts to a scripts subdirectory
+- discover_trees.sh: Set compile-command and indentation instructions for Emacs
+- discover_trees.sh: shellcheck: Do not use -o (SC2166)
+- discover_trees.sh: shellcheck: Remove x-prefixes since we use Bash (SC2268)
+- discover_trees.sh: shellcheck: Double-quote variable references (SC2086)
+- generate_source_tarball.sh: Add authorship
+- icedtea_sync.sh: Set compile-command and indentation instructions for Emacs
+- icedtea_sync.sh: shellcheck: Double-quote variable references (SC2086)
+- icedtea_sync.sh: shellcheck: Remove x-prefixes since we use Bash (SC2268)
+- openjdk_news.sh: Set compile-command and indentation instructions for Emacs
+- openjdk_news.sh: shellcheck: Double-quote variable references (SC2086)
+- openjdk_news.sh: shellcheck: Remove x-prefixes since we use Bash (SC2268)
+- openjdk_news.sh: shellcheck: Remove deprecated egrep usage (SC2196)
+- generate_source_tarball.sh: Output values of new options WITH_TEMP and OPENJDK_LATEST
+- generate_source_tarball.sh: Double-quote DEPTH reference (SC2086)
+- generate_source_tarball.sh: Avoid empty DEPTH reference while still appeasing shellcheck
+
+* Mon Jul  8 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.6-0.1.ea
+- Update to jdk-17.0.12+6 (EA)
+- Add openjdk-17.0.12+6-ea.tar.xz to .gitignore
+- Set updatever to 12
+- Set buildver to 6
+- Set rpmrelease to 1
+- Set is_ga to 0
+- Update sources to openjdk-17.0.12+6-ea.tar.xz
+- Require tzdata-java 2024a at runtime and for build (JDK-8325150)
+- Update lcms2 bundled provides to 2.16.0
+- Add zlib 1.3.1 bundled provides and zlib-devel build requirement (OPENJDK-3065)
+- Use component in EPEL and Fedora bug URLs
+- Label as error a designator mismatch
+- Change a fix-me comment to a note instead
+- Sync generate_source_tarball.sh from Fedora rawhide
+
 * Wed Apr 10 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.11.0.9-2
 - Update to jdk-17.0.11+9 (GA)
 - Add openjdk-17.0.11+9.tar.xz to .gitignore

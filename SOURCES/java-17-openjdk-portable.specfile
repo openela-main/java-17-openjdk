@@ -93,7 +93,7 @@
 # you can list those files, with appropriate sections: cat *.spec | grep -e --install -e --slave -e post_
 # TODO - fix those hardcoded lists via single list
 # Those files must *NOT* be ghosted for *slowdebug* packages
-# FIXME - if you are moving jshell or jlink or similar, always modify all three sections
+# NOTE - if you are moving jshell or jlink or similar, always modify all three sections
 # you can check via headless and devels:
 #    rpm -ql --noghost java-11-openjdk-headless-11.0.1.13-8.fc29.x86_64.rpm  | grep bin
 # == rpm -ql           java-11-openjdk-headless-slowdebug-11.0.1.13-8.fc29.x86_64.rpm  | grep bin
@@ -313,7 +313,7 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 11
+%global updatever 12
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
@@ -345,11 +345,11 @@
 # Define what url should JVM offer in case of a crash report
 # order may be important, epel may have rhel declared
 %if 0%{?epel}
-%global oj_vendor_bug_url  https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora%20EPEL&component=%{name}&version=epel%{epel}
+%global oj_vendor_bug_url  https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora%20EPEL&component=%{component}&version=epel%{epel}
 %else
 %if 0%{?fedora}
 # Does not work for rawhide, keeps the version field empty
-%global oj_vendor_bug_url  https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora&component=%{name}&version=%{fedora}
+%global oj_vendor_bug_url  https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora&component=%{component}&version=%{fedora}
 %else
 %if 0%{?rhel}
 %global oj_vendor_bug_url https://access.redhat.com/support/cases/
@@ -363,7 +363,7 @@
 # Define IcedTea version used for SystemTap tapsets and desktop file
 %global icedteaver      6.0.0pre00-c848b93a8598
 # Define current Git revision for the FIPS support patches
-%global fipsver d63771ea660
+%global fipsver e893be00150
 # Define JDK versions
 %global newjavaver %{featurever}.%{interimver}.%{updatever}.%{patchver}
 %global javaver         %{featurever}
@@ -377,8 +377,8 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver        9
-%global rpmrelease      3
+%global buildver        7
+%global rpmrelease      1
 #%%global tagsuffix     %%{nil}
 # Priority must be 8 digits in total; up to openjdk 1.8, we were using 18..... so when we moved to 11, we had to add another digit
 %if %is_system_jdk
@@ -676,6 +676,10 @@ Patch1001: fips-%{featurever}u-%{fipsver}.patch
 #
 #############################################
 
+# https://github.com/openjdk/jdk17u-dev/commit/859dda14f3f0d90294899812f5d34ea2e952a3df
+# Remove after next upstream update.
+Patch7: 0001-8332174-Remove-2-unpaired-RLO-Unicode-characters-in-.patch
+
 #############################################
 #
 # Portable build specific patches
@@ -725,8 +729,6 @@ BuildRequires: libffi-devel
 # Full documentation build requirements
 BuildRequires: graphviz
 BuildRequires: pandoc
-# 2024a required as of JDK-8325150
-BuildRequires: tzdata-java >= 2024a
 # cacerts build requirement in portable mode
 BuildRequires: ca-certificates
 # Earlier versions have a bug in tree vectorization on PPC
@@ -744,19 +746,22 @@ BuildRequires: harfbuzz-devel
 BuildRequires: lcms2-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
+BuildRequires: zlib-devel
 %else
-# Version in src/java.desktop/share/legal/freetype.md
+# Version in src/java.desktop/share/native/libfreetype/include/freetype/freetype.h
 Provides: bundled(freetype) = 2.13.2
 # Version in src/java.desktop/share/native/libsplashscreen/giflib/gif_lib.h
 Provides: bundled(giflib) = 5.2.1
 # Version in src/java.desktop/share/native/libharfbuzz/hb-version.h
 Provides: bundled(harfbuzz) = 8.2.2
 # Version in src/java.desktop/share/native/liblcms/lcms2.h
-Provides: bundled(lcms2) = 2.15.0
+Provides: bundled(lcms2) = 2.16.0
 # Version in src/java.desktop/share/native/libjavajpeg/jpeglib.h
 Provides: bundled(libjpeg) = 6b
 # Version in src/java.desktop/share/native/libsplashscreen/libpng/png.h
 Provides: bundled(libpng) = 1.6.40
+# Version in src/java.base/share/native/libzip/zlib/zlib.h
+Provides: bundled(zlib) = 1.3.1
 # We link statically against libstdc++ to increase portability
 BuildRequires: libstdc++-static
 %endif
@@ -971,6 +976,7 @@ pushd %{top_level_dir_name}
 # rpmbuild.
 %patch -P1 -p1
 %patch -P6 -p1
+%patch -P7 -p1
 # Add crypto policy and FIPS support
 %patch -P1001 -p1
 # nss.cfg PKCS11 support; must come last as it also alters java.security
@@ -994,7 +1000,7 @@ else
     exit 16
 fi
 if [ "x${UPSTREAM_EA_DESIGNATOR}" != "x%{ea_designator}" ] ; then
-    echo "WARNING: Designator mismatch";
+    echo "ERROR: Designator mismatch";
     echo "Spec file is configured for a %{build_type} build with designator '%{ea_designator}'"
     echo "Upstream version-pre setting is '${UPSTREAM_EA_DESIGNATOR}'";
     exit 17
@@ -1188,18 +1194,22 @@ function buildjdk() {
 
 function stripjdk() {
     local outputdir=${1}
-    local jdkimagepath=${outputdir}/images/%{jdkimage}
-    local jreimagepath=${outputdir}/images/%{jreimage}
-    local jmodimagepath=${outputdir}/images/jmods
+    local jdkimagepath=images/%{jdkimage}
+    local jreimagepath=images/%{jreimage}
+    local jmodimagepath=images/jmods
+    local modulefile=lib/modules
     local supportdir=${outputdir}/support
+    local modulebuildpath=${outputdir}/jdk/modules
+    local jdkoutdir=${outputdir}/${jdkimagepath}
+    local jreoutdir=${outputdir}/${jreimagepath}
 
     if [ "x$suffix" = "x" ] ; then
         # Keep the unstripped version for consumption by RHEL RPMs
-        cp -a ${jdkimagepath}{,.unstripped}
+        cp -a ${jdkoutdir}{,.unstripped}
 
         # Strip the files
-        for file in $(find ${jdkimagepath} ${jreimagepath} ${supportdir} -type f) ; do
-            if file ${file} | grep -q 'ELF'; then
+        for file in $(find ${jdkoutdir} ${jreoutdir} ${supportdir} ${modulebuildpath} -type f) ; do
+            if file ${file} | cut -d ':' -f 2 | grep -q 'ELF'; then
                 noextfile=${file/.so/};
                 objcopy --only-keep-debug ${file} ${noextfile}.debuginfo;
                 objcopy --add-gnu-debuglink=${noextfile}.debuginfo ${file};
@@ -1212,24 +1222,53 @@ function stripjdk() {
             echo "Support directory missing.";
             exit 15
         fi
-        for cmd in $(find ${supportdir} -name '*.jmod_exec.cmdline') ; do
+        # Build the java.base jmod a third time to fix the hashes of dependent jmods
+        for cmd in $(find ${supportdir}/${jmodimagepath} -name '*.jmod_exec.cmdline') \
+                   ${supportdir}/${jmodimagepath}/*java.base*exec.cmdline ; do
             pre=${cmd/_exec/_pre};
             post=${cmd/_exec/_post};
             jmod=$(echo ${cmd}|sed 's#.*_create_##'|sed 's#_exec.cmdline##')
             echo "Rebuilding ${jmod} against stripped binaries...";
             if [ -e ${pre} ] ; then
-                echo "Executing ${pre}...";
+                echo -e "Executing ${pre}...\n$(cat ${pre})";
                 cat ${pre} | sh -s ;
             fi
-            echo "Executing ${cmd}...";
+            echo "Executing ${cmd}...$(cat ${cmd})";
             cat ${cmd} | sh -s ;
             if [ -e ${post} ] ; then
-                echo "Executing ${post}...";
+                echo -e "Executing ${post}...\n$(cat ${post})";
                 cat ${post} | sh -s ;
             fi
         done
-        rm -rf ${jdkimagepath}/jmods
-        cp -a ${jmodimagepath} ${jdkimagepath}
+
+        # Rebuild the image with the stripped modules
+        for image in ${jdkimagepath} ${jreimagepath} ; do
+            outdir=${outputdir}/${image};
+            jlink=${supportdir}/${image}/_jlink*_exec.cmdline;
+            # Backup the existing image as it contains
+            # files not generated by jlink
+            mv ${outdir}{,.bak};
+            # Regenerate the image using the command
+            # generated using the initial build
+            echo -e "Executing ${jlink}...\n$(cat ${jlink})";
+            cat ${jlink} | sh -s;
+            # Move the new jmods and module file from the new
+            # image to the old one
+            if [ -e ${outdir}.bak/jmods ] ; then
+                rm -rf ${outdir}.bak/jmods;
+                mv ${outdir}/jmods ${outdir}.bak;
+            fi
+            rm -f ${outdir}.bak/${modulefile};
+            mv ${outdir}/${modulefile} ${outdir}.bak/$(dirname ${modulefile});
+            # Restore the original image
+            rm -rf ${outdir};
+            mv ${outdir}{.bak,};
+            # Update the CDS archives
+            for cmd in ${supportdir}/${image}/*_gen_cds*_exec.cmdline ; do
+                echo -e "Executing ${cmd}...\n$(cat ${cmd})";
+                cat ${cmd} | sh -s;
+            done
+        done
     fi
 }
 
@@ -1777,6 +1816,155 @@ done
 %{_jvmdir}/%{miscportablearchive}.sha256sum
 
 %changelog
+* Wed Jul 10 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.7-1
+- Update to jdk-17.0.12+7 (GA)
+- Update .gitignore to ignore openjdk-17.0.12+7.tar.xz
+- Update NEWS for 17.0.12+7 (GA)
+- Set buildver to 7
+- Set rpmrelease to 1
+- Set is_ga to 1
+- Update sources to openjdk-17.0.12+7.tar.xz
+- ** This tarball is embargoed until 2024-07-16 @ 1pm PT. **
+
+* Mon Jul 08 2024 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.12.0.6-0.2.ea
+- Adjusted DTLS NEWS entry style to match other entries
+
+* Mon Jul  8 2024 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.12.0.6-0.2.ea
+- NEWS: Import 21 entries for JDK-8256660, JDK-8326891, JDK-8325496,
+  JDK-8281658, and JDK-8315503, use 21 formatting for JDK-8256660,
+  JDK-8316138
+
+* Mon Jul  8 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.6-0.2.ea
+- Bump rpmrelease to 2
+- NEWS: Reword JDK-8256660 entry, add JDK-8316138 entry
+
+* Thu Jun 27 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.6-0.1.ea
+- Update to jdk-17.0.12+6 (EA)
+- Update .gitignore to ignore openjdk-17.0.12+6-ea.tar.xz
+- Update buildver to 6
+- Reset rpmrelease to 1
+- Update sources to openjdk-17.0.12+6-ea.tar.xz
+- Update NEWS for 17.0.12+6
+- Remove --enable-compatible-cds-alignment configure option
+- Resolves: OPENJDK-3134
+
+* Wed Jun 26 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.5-0.3.ea
+- Add upstream patch that removes illegal RLO Unicode characters
+- Related: OPENJDK-2904
+
+* Mon Jun 24 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.5-0.3.ea
+- Add build requirement for zlib-devel
+- Related: OPENJDK-3065
+
+* Fri Jun 14 2024 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.12.0.5-0.3.ea
+- Re-run jlink to regenerate the jmods directory and lib/modules with stripped libraries
+- Resolves: OPENJDK-3055
+
+* Fri Jun 14 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.5-0.3.ea
+- Bump rpmrelease to 3
+
+* Fri Jun 14 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.5-0.2.ea
+- Delete fips-17u-d63771ea660.patch
+- Use fips-17u-e893be00150.patch, rebased to jdk-17.0.12+2
+- fips-17u-e893be00150.patch was already committed with "Use 2.16.0...lcms2"
+- Update fipsver to e893be00150
+
+* Thu Jun  6 2024 Anton Bobrov <abobrov@redhat.com> - 1:17.0.12.0.5-0.2.ea
+- generate_source_tarball.sh: Use tar exclude options for VCS files
+- generate_source_tarball.sh: Improve VCS exclusion
+
+* Thu Jun  6 2024 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.12.0.5-0.2.ea
+- generate_source_tarball.sh: Update examples in header for clarity
+- generate_source_tarball.sh: Cleanup message issued when checkout already exists
+- generate_source_tarball.sh: Create directory in TMPDIR when using WITH_TEMP
+- generate_source_tarball.sh: Only add --depth=1 on non-local repositories
+- icedtea_sync.sh: Reinstate from rhel-8.9.0 branch
+- Move maintenance scripts to a scripts subdirectory
+- discover_trees.sh: Set compile-command and indentation instructions for Emacs
+- discover_trees.sh: shellcheck: Do not use -o (SC2166)
+- discover_trees.sh: shellcheck: Remove x-prefixes since we use Bash (SC2268)
+- discover_trees.sh: shellcheck: Double-quote variable references (SC2086)
+- generate_source_tarball.sh: Add authorship
+- icedtea_sync.sh: Set compile-command and indentation instructions for Emacs
+- icedtea_sync.sh: shellcheck: Double-quote variable references (SC2086)
+- icedtea_sync.sh: shellcheck: Remove x-prefixes since we use Bash (SC2268)
+- openjdk_news.sh: Set compile-command and indentation instructions for Emacs
+- openjdk_news.sh: shellcheck: Double-quote variable references (SC2086)
+- openjdk_news.sh: shellcheck: Remove x-prefixes since we use Bash (SC2268)
+- openjdk_news.sh: shellcheck: Remove deprecated egrep usage (SC2196)
+- generate_source_tarball.sh: Output values of new options WITH_TEMP and OPENJDK_LATEST
+- generate_source_tarball.sh: Double-quote DEPTH reference (SC2086)
+- generate_source_tarball.sh: Avoid empty DEPTH reference while still appeasing shellcheck
+
+* Mon Jun  3 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.5-0.2.ea
+- Bump rpmrelease to 2
+- Sync generate_source_tarball.sh from Fedora rawhide
+
+* Wed May 29 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.5-0.1.ea
+- Update to jdk-17.0.12+5 (EA)
+- Update .gitignore to ignore openjdk-17.0.12+5-ea.tar.xz
+- Update buildver to 5
+- Update sources to openjdk-17.0.12+5-ea.tar.xz
+- Update NEWS for 17.0.12+5
+
+* Wed May 29 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.4-0.1.ea
+- Change a fix-me comment to a note instead
+
+* Thu May 23 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.4-0.1.ea
+- Update to jdk-17.0.12+4 (EA)
+- Update .gitignore to ignore openjdk-17.0.12+4-ea.tar.xz
+- Update buildver to 4
+- Update sources to openjdk-17.0.12+4-ea.tar.xz
+- Update NEWS for 17.0.12+4
+
+* Wed May 22 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.3-0.1.ea
+- Update to jdk-17.0.12+3 (EA)
+- Update .gitignore to ignore openjdk-17.0.12+3-ea.tar.xz
+- Update buildver to 3
+- Update sources to openjdk-17.0.12+3-ea.tar.xz
+- Update NEWS for 17.0.12+3
+
+* Wed May 15 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.2-0.1.ea
+- Use component in EPEL and Fedora bug URLs
+- Label as error a designator mismatch
+
+* Mon May 13 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.2-0.1.ea
+- Use lcms2.h for bundled provides version reference
+- Use 2.16.0, not 2.16, for lcms2 version
+- Use zlib.h for bundled provides version reference
+- Use freetype.h for bundled provides version reference
+- Remove remove-test-left-to-right-override-character.patch
+
+* Fri May 10 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.2-0.1.ea
+- Update to jdk-17.0.12+2 (EA)
+- Update .gitignore to ignore openjdk-17.0.12+2-ea.tar.xz
+- Update buildver to 2
+- Update sources to openjdk-17.0.12+2-ea.tar.xz
+- Update NEWS for 17.0.12+2
+- Add --enable-compatible-cds-alignment configure option (OPENJDK-3007)
+- Add remove-test-left-to-right-override-character.patch
+- Add remove-test-left-to-right-override-character.patch file
+- Remove tzdata build requires (OPENJDK-2843)
+
+* Fri May 10 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.1-0.1.ea
+- Update lcms2 version location comment
+- Update lcms2 bundled provides to 2.16
+- Add zlib 1.3.1 bundled provides
+
+* Thu May  9 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.1-0.1.ea
+- Update to jdk-17.0.12+1 (EA)
+- Update .gitignore to ignore openjdk-17.0.12+1-ea.tar.xz
+- Bump updatever to 12
+- Reset buildver to 1
+- Reset rpmrelease to 1
+- Reset is_ga to 0
+- Update sources to openjdk-17.0.12+1-ea.tar.xz
+- Update NEWS for 17.0.12+1
+- Fix fips-17u-d63771ea660.patch so that it applies to 17.0.12+1
+
+* Thu Apr 18 2024 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.11.0.9-4
+- Sync release notes with upstream version: https://bit.ly/openjdk17011
+
 * Wed Apr 10 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.11.0.9-3
 - BuildRequires tzdata-java >= 2024a (JDK-8325150)
 
