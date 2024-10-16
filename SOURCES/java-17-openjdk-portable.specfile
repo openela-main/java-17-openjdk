@@ -313,7 +313,7 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 12
+%global updatever 13
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
@@ -377,7 +377,7 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver        7
+%global buildver 11
 %global rpmrelease      1
 #%%global tagsuffix     %%{nil}
 # Priority must be 8 digits in total; up to openjdk 1.8, we were using 18..... so when we moved to 11, we had to add another digit
@@ -397,7 +397,7 @@
 # Release will be (where N is usually a number starting at 1):
 # - 0.N%%{?extraver}%%{?dist} for EA releases,
 # - N%%{?extraver}{?dist} for GA releases
-%global is_ga           1
+%global is_ga 1
 %if %{is_ga}
 %global build_type GA
 %global ea_designator ""
@@ -676,9 +676,7 @@ Patch1001: fips-%{featurever}u-%{fipsver}.patch
 #
 #############################################
 
-# https://github.com/openjdk/jdk17u-dev/commit/859dda14f3f0d90294899812f5d34ea2e952a3df
-# Remove after next upstream update.
-Patch7: 0001-8332174-Remove-2-unpaired-RLO-Unicode-characters-in-.patch
+# Currently empty
 
 #############################################
 #
@@ -727,8 +725,11 @@ BuildRequires: java-%{buildjdkver}-openjdk-devel
 BuildRequires: libffi-devel
 %endif
 # Full documentation build requirements
+# pandoc is only available on RHEL/CentOS 8
+%if 0%{?rhel} == 8
 BuildRequires: graphviz
 BuildRequires: pandoc
+%endif
 # cacerts build requirement in portable mode
 BuildRequires: ca-certificates
 # Earlier versions have a bug in tree vectorization on PPC
@@ -976,7 +977,6 @@ pushd %{top_level_dir_name}
 # rpmbuild.
 %patch -P1 -p1
 %patch -P6 -p1
-%patch -P7 -p1
 # Add crypto policy and FIPS support
 %patch -P1001 -p1
 # nss.cfg PKCS11 support; must come last as it also alters java.security
@@ -1816,6 +1816,50 @@ done
 %{_jvmdir}/%{miscportablearchive}.sha256sum
 
 %changelog
+* Tue Oct  8 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.13.0.11-1
+- Update NEWS for jdk-17.0.13+11 (GA)
+
+* Mon Oct  7 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.13.0.11-1
+- Update to jdk-17.0.13+11 (GA)
+- Add to .gitignore openjdk-17.0.13+11.tar.xz
+- Set buildver to 11
+- Set is_ga to 1
+- Update sources to openjdk-17.0.13+11.tar.xz
+- ** This tarball is embargoed until 2024-10-15 @ 1pm PT. **
+
+* Thu Oct  3 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.13.0.10-0.1.ea
+- Update to jdk-17.0.13+10 (EA)
+- Add to .gitignore openjdk-17.0.13+10-ea.tar.xz
+- Set buildver to 10
+- Update sources to openjdk-17.0.13+10-ea.tar.xz
+- Update NEWS for jdk-17.0.13+10
+
+* Wed Oct  2 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.13.0.9-0.1.ea
+- Update to jdk-17.0.13+9 (EA)
+- Add to .gitignore openjdk-17.0.13+9-ea.tar.xz
+- Set buildver to 9
+- Set rpmrelease to 1
+- Update sources to openjdk-17.0.13+9-ea.tar.xz
+- Update NEWS for jdk-17.0.13+9
+
+* Tue Sep 17 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.13.0.1-0.2.ea
+- Set rpmrelease to 2
+
+* Fri Aug  2 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.13.0.1-0.1.ea
+- Update to jdk-17.0.13+1 (EA)
+- Update .gitignore to ignore openjdk-17.0.13+1-ea.tar.xz
+- Set updatever to 13
+- Set buildver to 1
+- Set is_ga to 0
+- Update sources to openjdk-17.0.13+1-ea.tar.xz
+- Update NEWS for 17.0.13+1 (EA)
+- Remove 0001-8332174-Remove-2-unpaired-RLO-Unicode-characters-in-.patch
+- Related: OPENJDK-2904
+
+* Fri Aug 02 2024 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.12.0.7-1
+- Default to without fresh_libjvm now that java-17-openjdk-17.0.11.0.9-2.el9 is in c9s-pending
+- Related: CS-2390
+
 * Wed Jul 10 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.12.0.7-1
 - Update to jdk-17.0.12+7 (GA)
 - Update .gitignore to ignore openjdk-17.0.12+7.tar.xz
@@ -1962,8 +2006,12 @@ done
 - Update NEWS for 17.0.12+1
 - Fix fips-17u-d63771ea660.patch so that it applies to 17.0.12+1
 
+* Thu Apr 18 2024 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.11.0.9-5
+- Bump rpmrelease to rebuild for CentOS 9
+
 * Thu Apr 18 2024 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.11.0.9-4
 - Sync release notes with upstream version: https://bit.ly/openjdk17011
+- Turn off 'fresh_libjvm' until jdk-17.0.9 or later is in the CentOS buildroot
 
 * Wed Apr 10 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.11.0.9-3
 - BuildRequires tzdata-java >= 2024a (JDK-8325150)
@@ -2133,6 +2181,10 @@ done
 - Apply all patches using -p1
 - Temporarily turn off 'fresh_libjvm' due to removal of JVM_IsThreadAlive (JDK-8305425)
 - ** This tarball is embargoed until 2023-10-17 @ 1pm PT. **
+
+* Sat Sep 02 2023 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.8.1.1-2
+- Bump rpmrelease to rebuild for CentOS 9
+- pandoc is only available on RHEL/CentOS 8
 
 * Sat Sep 02 2023 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.8.1.1-1
 - Update to jdk-17.0.8.1+1 (GA)
