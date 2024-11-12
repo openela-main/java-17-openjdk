@@ -115,9 +115,9 @@
 # similarly for other %%{_jvmdir}/{jre,java} and %%{_javadocdir}/{java,java-zip}
 %define is_release_build() %( if [ "%{?1}" == "%{debug_suffix_unquoted}" -o "%{?1}" == "%{fastdebug_suffix_unquoted}" ]; then echo "0" ; else echo "1"; fi )
 
-# while JDK is a techpreview(is_system_jdk=0), some provides are turned off. Once jdk stops to be an techpreview, move it to 1
-# as sytem JDK, we mean any JDK which can run whole system java stack without issues (like bytecode issues, module issues, dependencies...)
-%global is_system_jdk 0
+# Indicates whether this is the default JDK on this version of RHEL
+# Only the default/system JDK provides unversioned Provides like 'java', 'jre' and 'java-devel'
+%global is_system_jdk 1
 
 %global aarch64         aarch64 arm64 armv8
 # we need to distinguish between big and little endian PPC64
@@ -383,7 +383,7 @@
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
 %global buildver 11
 # rpmrelease numbering must start at 2 to be later than the 9.0 RPM
-%global rpmrelease 3
+%global rpmrelease 4
 # Settings used by the portable build
 %global portablerelease 1
 # Portable suffix differs between RHEL and CentOS
@@ -2496,6 +2496,11 @@ cjc.mainProgram(args)
 %endif
 
 %changelog
+* Fri Oct 18 2024 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.13.0.11-4
+- Set this to be the default/system JDK providing 'java', 'jre', 'java-devel', etc.
+- Set rpmrelease to 4
+- Resolves: RHEL-63034
+
 * Wed Oct  9 2024 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.13.0.11-3
 - Correct version suffix in "Update to jdk-17.0.13+11 (GA)" changelog entry
 - Related: RHEL-58785
