@@ -324,7 +324,7 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 14
+%global updatever 15
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
@@ -364,7 +364,7 @@
 # Define IcedTea version used for SystemTap tapsets and desktop file
 %global icedteaver      6.0.0pre00-c848b93a8598
 # Define current Git revision for the FIPS support patches
-%global fipsver e893be00150
+%global fipsver df4c415ac9a
 %global javaver         %{featurever}
 %global newjavaver %{featurever}.%{interimver}.%{updatever}.%{patchver}
 
@@ -379,9 +379,9 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver 7
+%global buildver 6
 # rpmrelease numbering must start at 2 to be later than the 8.6 RPM
-%global rpmrelease 3
+%global rpmrelease 2
 # Settings used by the portable build
 %global portablerelease 1
 %global portablesuffix el8
@@ -1126,8 +1126,8 @@ Requires: ca-certificates
 # Require javapackages-filesystem for ownership of /usr/lib/jvm/ and macros
 Requires: javapackages-filesystem
 # Require zone-info data provided by tzdata-java sub-package
-# 2024a required as of JDK-8325150
-Requires: tzdata-java >= 2024a
+# 2025a required as of JDK-8347965
+Requires: tzdata-java >= 2025a
 # for support of kernel stream control
 # libsctp.so.1 is being `dlopen`ed on demand
 Requires: lksctp-tools%{?_isa}
@@ -1457,8 +1457,8 @@ BuildRequires: java-%{featurever}-openjdk-portable-misc = %{epoch}:%{version}-%{
 %ifarch %{zero_arches}
 BuildRequires: libffi-devel
 %endif
-# 2024a required as of JDK-8325150
-BuildRequires: tzdata-java >= 2024a
+# 2025a required as of JDK-8347965
+BuildRequires: tzdata-java >= 2025a
 # Earlier versions have a bug in tree vectorization on PPC
 BuildRequires: gcc >= 4.8.3-8
 
@@ -1477,11 +1477,11 @@ BuildRequires: libpng-devel
 BuildRequires: zlib-devel
 %else
 # Version in src/java.desktop/share/native/libfreetype/include/freetype/freetype.h
-Provides: bundled(freetype) = 2.13.0
+Provides: bundled(freetype) = 2.13.2
 # Version in src/java.desktop/share/native/libsplashscreen/giflib/gif_lib.h
 Provides: bundled(giflib) = 5.2.2
 # Version in src/java.desktop/share/native/libharfbuzz/hb-version.h
-Provides: bundled(harfbuzz) = 7.2.0
+Provides: bundled(harfbuzz) = 8.2.2
 # Version in src/java.desktop/share/legal/lcms.md
 Provides: bundled(lcms2) = 2.16.0
 # Version in src/java.desktop/share/native/libjavajpeg/jpeglib.h
@@ -2499,6 +2499,21 @@ cjc.mainProgram(args)
 %endif
 
 %changelog
+* Thu Apr 10 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.15.0.6-2
+- Update to jdk-17.0.15+6 (GA)
+- Add to .gitignore openjdk-17.0.15+6.tar.xz
+- Set updatever to 15
+- Set buildver to 6
+- Set rpmrelease to 2
+- Update sources to openjdk-17.0.15+6.tar.xz
+- Set bundled freetype provide version to 2.13.2
+- Set bundled harfbuzz provide version to 8.2.2
+- Require tzdata-java 2025a at runtime and for build
+- Sync java-17-openjdk-portable.specfile from openjdk-portable-rhel-8
+- Update FIPS patch
+- Resolves: RHEL-86624
+- ** This tarball is embargoed until 2025-04-15 @ 1pm PT. **
+
 * Wed Jan 15 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.14.0.7-3
 - Set rpmrelease to 3
 - Revert "Require tzdata-java 2024b at runtime and for build"
