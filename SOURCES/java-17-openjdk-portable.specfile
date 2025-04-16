@@ -315,7 +315,7 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 14
+%global updatever 15
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
@@ -365,7 +365,7 @@
 # Define IcedTea version used for SystemTap tapsets and desktop file
 %global icedteaver      6.0.0pre00-c848b93a8598
 # Define current Git revision for the FIPS support patches
-%global fipsver e893be00150
+%global fipsver df4c415ac9a
 # Define JDK versions
 %global newjavaver %{featurever}.%{interimver}.%{updatever}.%{patchver}
 %global javaver         %{featurever}
@@ -379,8 +379,8 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver 7
-%global rpmrelease      1
+%global buildver 6
+%global rpmrelease 1
 #%%global tagsuffix     %%{nil}
 # Priority must be 8 digits in total; up to openjdk 1.8, we were using 18..... so when we moved to 11, we had to add another digit
 %if %is_system_jdk
@@ -1832,6 +1832,37 @@ done
 %endif
 
 %changelog
+* Thu Apr 10 2025 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.15.0.6-1
+- Update NEWS for jdk-17.0.15+6 (GA)
+
+* Thu Apr 10 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.15.0.6-1
+- Update to jdk-17.0.15+6 (GA)
+- Add to .gitignore openjdk-17.0.15+6.tar.xz
+- Set buildver to 6
+- Set rpmrelease to 1
+- Set is_ga to 1
+- Update sources to openjdk-17.0.15+6.tar.xz
+- ** This tarball is embargoed until 2025-04-15 @ 1pm PT. **
+
+* Mon Apr  7 2025 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.15.0.5-0.2.ea
+- Add missing jdk-17.0.15+5 (EA) NEWS entries
+- Add release note for JDK-8346587 to NEWS
+- Set rpmrelease to 2
+
+* Sun Apr  6 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.15.0.5-0.1.ea
+- Update FIPS patch
+
+* Fri Apr  4 2025 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.15.0.5-0.1.ea
+- Update NEWS for jdk-17.0.15+5 (EA)
+
+* Fri Apr  4 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.15.0.5-0.1.ea
+- Update to jdk-17.0.15+5 (EA)
+- Add to .gitignore openjdk-17.0.15+5-ea.tar.xz
+- Set updatever to 15
+- Set buildver to 5
+- Set is_ga to 0
+- Update sources to openjdk-17.0.15+5-ea.tar.xz
+
 * Mon Jan 13 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.14.0.7-1
 - Update to jdk-17.0.14+7 (GA)
 - Add to .gitignore openjdk-17.0.14+7.tar.xz
