@@ -385,7 +385,7 @@
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
 %global buildver 6
 # rpmrelease numbering must start at 2 to be later than the 9.0 RPM
-%global rpmrelease 2
+%global rpmrelease 3
 # Settings used by the portable build
 %global portablerelease 1
 # Portable suffix differs between RHEL and CentOS
@@ -2508,6 +2508,11 @@ cjc.mainProgram(args)
 %endif
 
 %changelog
+* Sat Jun 14 2025 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.15.0.6-3
+- Bump release number to appease 9.6-z erratum
+- Related: RHEL-86987
+- Related: RHEL-86630
+
 * Thu Apr 10 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.15.0.6-2
 - Update to jdk-17.0.15+6 (GA)
 - Add to .gitignore openjdk-17.0.15+6.tar.xz
