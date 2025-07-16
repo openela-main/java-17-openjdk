@@ -324,7 +324,7 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 15
+%global updatever 16
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
@@ -379,7 +379,7 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver 6
+%global buildver 8
 # rpmrelease numbering must start at 2 to be later than the 8.6 RPM
 %global rpmrelease 2
 # Settings used by the portable build
@@ -1126,8 +1126,8 @@ Requires: ca-certificates
 # Require javapackages-filesystem for ownership of /usr/lib/jvm/ and macros
 Requires: javapackages-filesystem
 # Require zone-info data provided by tzdata-java sub-package
-# 2025a required as of JDK-8347965
-Requires: tzdata-java >= 2025a
+# 2025b required as of JDK-8352716
+Requires: tzdata-java >= 2025b
 # for support of kernel stream control
 # libsctp.so.1 is being `dlopen`ed on demand
 Requires: lksctp-tools%{?_isa}
@@ -1457,8 +1457,8 @@ BuildRequires: java-%{featurever}-openjdk-portable-misc = %{epoch}:%{version}-%{
 %ifarch %{zero_arches}
 BuildRequires: libffi-devel
 %endif
-# 2025a required as of JDK-8347965
-BuildRequires: tzdata-java >= 2025a
+# 2025b required as of JDK-8352716
+BuildRequires: tzdata-java >= 2025b
 # Earlier versions have a bug in tree vectorization on PPC
 BuildRequires: gcc >= 4.8.3-8
 
@@ -1477,17 +1477,17 @@ BuildRequires: libpng-devel
 BuildRequires: zlib-devel
 %else
 # Version in src/java.desktop/share/native/libfreetype/include/freetype/freetype.h
-Provides: bundled(freetype) = 2.13.2
+Provides: bundled(freetype) = 2.13.3
 # Version in src/java.desktop/share/native/libsplashscreen/giflib/gif_lib.h
 Provides: bundled(giflib) = 5.2.2
 # Version in src/java.desktop/share/native/libharfbuzz/hb-version.h
-Provides: bundled(harfbuzz) = 8.2.2
-# Version in src/java.desktop/share/legal/lcms.md
-Provides: bundled(lcms2) = 2.16.0
+Provides: bundled(harfbuzz) = 10.4.0
+# Version in src/java.desktop/share/native/liblcms/lcms2.h
+Provides: bundled(lcms2) = 2.17.0
 # Version in src/java.desktop/share/native/libjavajpeg/jpeglib.h
 Provides: bundled(libjpeg) = 6b
 # Version in src/java.desktop/share/native/libsplashscreen/libpng/png.h
-Provides: bundled(libpng) = 1.6.43
+Provides: bundled(libpng) = 1.6.47
 # Version in src/java.base/share/native/libzip/zlib/zlib.h
 Provides: bundled(zlib) = 1.3.1
 %endif
@@ -2499,6 +2499,22 @@ cjc.mainProgram(args)
 %endif
 
 %changelog
+* Wed Jul 09 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.16.0.8-2
+- Update to jdk-17.0.16+8
+- Add to .gitignore openjdk-17.0.16+8.tar.xz
+- Set updatever to 16
+- Set buildver to 8
+- Update sources to openjdk-17.0.16+8.tar.xz
+- Resolves: RHEL-101793
+- Resolves: RHEL-102273
+- Require tzdata-java 2025b at runtime and for build
+- Set bundled freetype provide version to 2.13.3
+- Set bundled harfbuzz provide version to 10.4.0
+- Set bundled lcms2 provide version to 2.17.0
+- Set bundled libpng provide version to 1.6.47
+- Sync java-17-openjdk-portable.specfile from openjdk-portable-rhel-8
+- ** This tarball is embargoed until 2025-07-15 @ 1pm PT. **
+
 * Thu Apr 10 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.15.0.6-2
 - Update to jdk-17.0.15+6 (GA)
 - Add to .gitignore openjdk-17.0.15+6.tar.xz
