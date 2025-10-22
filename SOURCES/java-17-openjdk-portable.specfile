@@ -315,7 +315,7 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 16
+%global updatever 17
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
@@ -379,7 +379,7 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver 8
+%global buildver 10
 %global rpmrelease 1
 #%%global tagsuffix     %%{nil}
 # Priority must be 8 digits in total; up to openjdk 1.8, we were using 18..... so when we moved to 11, we had to add another digit
@@ -756,7 +756,7 @@ Provides: bundled(freetype) = 2.13.3
 # Version in src/java.desktop/share/native/libsplashscreen/giflib/gif_lib.h
 Provides: bundled(giflib) = 5.2.2
 # Version in src/java.desktop/share/native/libharfbuzz/hb-version.h
-Provides: bundled(harfbuzz) = 10.4.0
+Provides: bundled(harfbuzz) = 11.2.0
 # Version in src/java.desktop/share/native/liblcms/lcms2.h
 Provides: bundled(lcms2) = 2.17.0
 # Version in src/java.desktop/share/native/libjavajpeg/jpeglib.h
@@ -1832,6 +1832,32 @@ done
 %endif
 
 %changelog
+* Thu Oct 16 2025 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.17.0.10-1
+- Update NEWS for jdk-17.0.17+10 (GA)
+- Move prior JDK-8309841 release note to appropriate section
+
+* Tue Oct 14 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.17.0.10-1
+- Update to jdk-17.0.17+10 (GA)
+- Add to .gitignore openjdk-17.0.17+10.tar.xz
+- Set buildver to 10
+- Set is_ga to 1
+- Update sources to openjdk-17.0.17+10.tar.xz
+- ** This tarball is embargoed until 2025-10-21 @ 1pm PT. **
+
+* Thu Sep 18 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.17.0.7-0.1.ea
+- Update to jdk-17.0.17+7 (EA)
+- Add to .gitignore openjdk-17.0.17+7-ea.tar.xz
+- Set updatever to 17
+- Set buildver to 7
+- Set is_ga to 0
+- Update sources to openjdk-17.0.17+7-ea.tar.xz
+- Set bundled harfbuzz version to 11.2.0
+- Update NEWS for jdk-17.0.17+7 (EA)
+
+* Mon Jul 21 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.16.0.8-1
+- Synchronize openjdk_news.sh from java-21-openjdk vanilla branch
+- Resolves: OPENJDK-3950
+
 * Wed Jul 09 2025 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.16.0.8-1
 - Update NEWS for jdk-17.0.16+8 (GA)
 

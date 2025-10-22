@@ -324,7 +324,7 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 16
+%global updatever 17
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
@@ -379,9 +379,8 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver 8
-# rpmrelease numbering must start at 2 to be later than the 8.6 RPM
-%global rpmrelease 2
+%global buildver 10
+%global rpmrelease 1
 # Settings used by the portable build
 %global portablerelease 1
 %global portablesuffix el8
@@ -1481,7 +1480,7 @@ Provides: bundled(freetype) = 2.13.3
 # Version in src/java.desktop/share/native/libsplashscreen/giflib/gif_lib.h
 Provides: bundled(giflib) = 5.2.2
 # Version in src/java.desktop/share/native/libharfbuzz/hb-version.h
-Provides: bundled(harfbuzz) = 10.4.0
+Provides: bundled(harfbuzz) = 11.2.0
 # Version in src/java.desktop/share/native/liblcms/lcms2.h
 Provides: bundled(lcms2) = 2.17.0
 # Version in src/java.desktop/share/native/libjavajpeg/jpeglib.h
@@ -2499,6 +2498,27 @@ cjc.mainProgram(args)
 %endif
 
 %changelog
+* Thu Oct 16 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.17.0.10-1
+- Update to jdk-17.0.17+10 (GA)
+- Add to .gitignore openjdk-17.0.17+10.tar.xz
+- Set buildver to 10
+- Set rpmrelease to 1, remove 'must start at 2' comment
+- Set is_ga to 1
+- Update sources to openjdk-17.0.17+10.tar.xz
+- Sync java-17-openjdk-portable.specfile from openjdk-portable-rhel-8
+- Resolves: RHEL-119449
+- ** This tarball is embargoed until 2025-10-21 @ 1pm PT. **
+
+* Fri Sep 26 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.17.0.7-0.2.ea
+- Update to jdk-17.0.17+7 (EA)
+- Add to .gitignore openjdk-17.0.17+7-ea.tar.xz
+- Set updatever to 17
+- Set buildver to 7
+- Set is_ga to 0
+- Update sources to openjdk-17.0.17+7-ea.tar.xz
+- Set bundled harfbuzz version to 11.2.0
+- Sync java-17-openjdk-portable.specfile from openjdk-portable-rhel-8
+
 * Wed Jul 09 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.16.0.8-2
 - Update to jdk-17.0.16+8
 - Add to .gitignore openjdk-17.0.16+8.tar.xz
