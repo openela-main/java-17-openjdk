@@ -324,7 +324,7 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 17
+%global updatever 18
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
@@ -379,7 +379,7 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver 10
+%global buildver 8
 %global rpmrelease 1
 # Settings used by the portable build
 %global portablerelease 1
@@ -1486,7 +1486,7 @@ Provides: bundled(lcms2) = 2.17.0
 # Version in src/java.desktop/share/native/libjavajpeg/jpeglib.h
 Provides: bundled(libjpeg) = 6b
 # Version in src/java.desktop/share/native/libsplashscreen/libpng/png.h
-Provides: bundled(libpng) = 1.6.47
+Provides: bundled(libpng) = 1.6.51
 # Version in src/java.base/share/native/libzip/zlib/zlib.h
 Provides: bundled(zlib) = 1.3.1
 %endif
@@ -2498,6 +2498,25 @@ cjc.mainProgram(args)
 %endif
 
 %changelog
+* Fri Jan 16 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.18.0.8-1
+- Update to jdk-17.0.18+8 (GA)
+- Add to .gitignore openjdk-17.0.18+8.tar.xz
+- Sync java-17-openjdk-portable.specfile from openjdk-portable-rhel-8
+- Set buildver to 8
+- Set is_ga to 1
+- Update sources to openjdk-17.0.18+8.tar.xz
+- ** This tarball is embargoed until 2026-01-20 @ 1pm PT. **
+
+* Thu Jan 15 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.18.0.7-0.1.ea
+- Update to jdk-17.0.18+7 (EA)
+- Add to .gitignore openjdk-17.0.18+7-ea.tar.xz
+- Set updatever to 18
+- Set buildver to 7
+- Set is_ga to 0
+- Update sources to openjdk-17.0.18+7-ea.tar.xz
+- Set bundled libpng version to 1.6.51
+- Sync java-17-openjdk-portable.specfile from openjdk-portable-rhel-8
+
 * Thu Oct 16 2025 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.17.0.10-1
 - Update to jdk-17.0.17+10 (GA)
 - Add to .gitignore openjdk-17.0.17+10.tar.xz
