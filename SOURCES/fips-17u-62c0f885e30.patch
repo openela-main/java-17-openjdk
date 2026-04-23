@@ -512,7 +512,7 @@ index db56dfcd505..07e34e95c05 100644
  
      protected byte[] engineUpdate(byte[] input, int inputOffset, int inputLen) {
 diff --git a/src/java.base/share/classes/com/sun/crypto/provider/SunJCE.java b/src/java.base/share/classes/com/sun/crypto/provider/SunJCE.java
-index a020e1c15d8..3c064965e82 100644
+index 33172288ba3..de1ee6fd7a1 100644
 --- a/src/java.base/share/classes/com/sun/crypto/provider/SunJCE.java
 +++ b/src/java.base/share/classes/com/sun/crypto/provider/SunJCE.java
 @@ -31,6 +31,7 @@ import java.security.SecureRandom;
@@ -534,10 +534,16 @@ index a020e1c15d8..3c064965e82 100644
      @java.io.Serial
      private static final long serialVersionUID = 6812507587804302833L;
  
-@@ -143,285 +148,287 @@ public final class SunJCE extends Provider {
+@@ -143,288 +148,290 @@ public final class SunJCE extends Provider {
      void putEntries() {
          // reuse attribute map and reset before each reuse
          HashMap<String, String> attrs = new HashMap<>(3);
+-        attrs.put("SupportedKeyClasses",
+-                "java.security.interfaces.RSAPublicKey" +
+-                "|java.security.interfaces.RSAPrivateKey");
+-        ps("Signature", "NONEwithRSA",
+-                "com.sun.crypto.provider.RSACipherAdaptor", null, attrs);
+-        // continue adding cipher specific attributes
 -        attrs.put("SupportedModes", "ECB");
 -        attrs.put("SupportedPaddings", "NOPADDING|PKCS1PADDING|OAEPPADDING"
 -                + "|OAEPWITHMD5ANDMGF1PADDING"
@@ -549,9 +555,6 @@ index a020e1c15d8..3c064965e82 100644
 -                + "|OAEPWITHSHA-512ANDMGF1PADDING"
 -                + "|OAEPWITHSHA-512/224ANDMGF1PADDING"
 -                + "|OAEPWITHSHA-512/256ANDMGF1PADDING");
--        attrs.put("SupportedKeyClasses",
--                "java.security.interfaces.RSAPublicKey" +
--                "|java.security.interfaces.RSAPrivateKey");
 -        ps("Cipher", "RSA",
 -                "com.sun.crypto.provider.RSACipher", null, attrs);
 -
@@ -818,6 +821,12 @@ index a020e1c15d8..3c064965e82 100644
 -                "com.sun.crypto.provider.DHKeyPairGenerator",
 -                null);
 +        if (!systemFipsEnabled) {
++            attrs.put("SupportedKeyClasses",
++                    "java.security.interfaces.RSAPublicKey" +
++                    "|java.security.interfaces.RSAPrivateKey");
++            ps("Signature", "NONEwithRSA",
++                    "com.sun.crypto.provider.RSACipherAdaptor", null, attrs);
++            // continue adding cipher specific attributes
 +            attrs.put("SupportedModes", "ECB");
 +            attrs.put("SupportedPaddings", "NOPADDING|PKCS1PADDING|OAEPPADDING"
 +                    + "|OAEPWITHMD5ANDMGF1PADDING"
@@ -829,9 +838,6 @@ index a020e1c15d8..3c064965e82 100644
 +                    + "|OAEPWITHSHA-512ANDMGF1PADDING"
 +                    + "|OAEPWITHSHA-512/224ANDMGF1PADDING"
 +                    + "|OAEPWITHSHA-512/256ANDMGF1PADDING");
-+            attrs.put("SupportedKeyClasses",
-+                    "java.security.interfaces.RSAPublicKey" +
-+                    "|java.security.interfaces.RSAPrivateKey");
 +            ps("Cipher", "RSA",
 +                    "com.sun.crypto.provider.RSACipher", null, attrs);
 +
@@ -1101,7 +1107,7 @@ index a020e1c15d8..3c064965e82 100644
  
          /*
           * Algorithm parameter generation engines
-@@ -430,15 +437,17 @@ public final class SunJCE extends Provider {
+@@ -433,15 +440,17 @@ public final class SunJCE extends Provider {
                  "DiffieHellman", "com.sun.crypto.provider.DHParameterGenerator",
                  null);
  
@@ -1128,7 +1134,7 @@ index a020e1c15d8..3c064965e82 100644
  
          /*
           * Algorithm Parameter engines
-@@ -610,118 +619,120 @@ public final class SunJCE extends Provider {
+@@ -613,118 +622,120 @@ public final class SunJCE extends Provider {
          ps("SecretKeyFactory", "PBEWithHmacSHA512AndAES_256",
                  "com.sun.crypto.provider.PBEKeyFactory$PBEWithHmacSHA512AndAES_256");
  
@@ -1798,7 +1804,7 @@ index ea28bb8747e..77161eb3844 100644
 +    }
  }
 diff --git a/src/java.base/share/classes/module-info.java b/src/java.base/share/classes/module-info.java
-index fad70bdc058..29a813a485f 100644
+index 8f1ecae3ed1..044056c7bc8 100644
 --- a/src/java.base/share/classes/module-info.java
 +++ b/src/java.base/share/classes/module-info.java
 @@ -152,6 +152,8 @@ module java.base {
@@ -2508,7 +2514,7 @@ index 00000000000..dc8bc72fccb
 +    }
 +}
 diff --git a/src/java.base/share/conf/security/java.security b/src/java.base/share/conf/security/java.security
-index e26b7f8c394..08effe23fce 100644
+index cd6407ceffc..2c14cf189a1 100644
 --- a/src/java.base/share/conf/security/java.security
 +++ b/src/java.base/share/conf/security/java.security
 @@ -82,6 +82,17 @@ security.provider.tbd=Apple
@@ -2593,7 +2599,7 @@ index e26b7f8c394..08effe23fce 100644
  # the javax.net.ssl package.
 diff --git a/src/java.base/share/conf/security/nss.fips.cfg.in b/src/java.base/share/conf/security/nss.fips.cfg.in
 new file mode 100644
-index 00000000000..55bbba98b7a
+index 00000000000..6de716e6b42
 --- /dev/null
 +++ b/src/java.base/share/conf/security/nss.fips.cfg.in
 @@ -0,0 +1,8 @@
@@ -2606,10 +2612,10 @@ index 00000000000..55bbba98b7a
 +attributes(*,CKO_SECRET_KEY,CKK_GENERIC_SECRET)={ CKA_SIGN=true }
 +
 diff --git a/src/java.base/share/lib/security/default.policy b/src/java.base/share/lib/security/default.policy
-index 4e3c326cb2f..c39faee2f43 100644
+index 9bd5dd53bd3..d1eba14c252 100644
 --- a/src/java.base/share/lib/security/default.policy
 +++ b/src/java.base/share/lib/security/default.policy
-@@ -123,6 +123,7 @@ grant codeBase "jrt:/jdk.charsets" {
+@@ -124,6 +124,7 @@ grant codeBase "jrt:/jdk.charsets" {
  grant codeBase "jrt:/jdk.crypto.ec" {
      permission java.lang.RuntimePermission
                     "accessClassInPackage.sun.security.*";
@@ -2617,7 +2623,7 @@ index 4e3c326cb2f..c39faee2f43 100644
      permission java.lang.RuntimePermission "loadLibrary.sunec";
      permission java.security.SecurityPermission "putProviderProperty.SunEC";
      permission java.security.SecurityPermission "clearProviderProperties.SunEC";
-@@ -132,6 +133,7 @@ grant codeBase "jrt:/jdk.crypto.ec" {
+@@ -133,6 +134,7 @@ grant codeBase "jrt:/jdk.crypto.ec" {
  grant codeBase "jrt:/jdk.crypto.cryptoki" {
      permission java.lang.RuntimePermission
                     "accessClassInPackage.com.sun.crypto.provider";
@@ -2625,7 +2631,7 @@ index 4e3c326cb2f..c39faee2f43 100644
      permission java.lang.RuntimePermission "accessClassInPackage.jdk.internal.misc";
      permission java.lang.RuntimePermission
                     "accessClassInPackage.sun.security.*";
-@@ -142,6 +144,8 @@ grant codeBase "jrt:/jdk.crypto.cryptoki" {
+@@ -143,6 +145,8 @@ grant codeBase "jrt:/jdk.crypto.cryptoki" {
      permission java.util.PropertyPermission "os.name", "read";
      permission java.util.PropertyPermission "os.arch", "read";
      permission java.util.PropertyPermission "jdk.crypto.KeyAgreement.legacyKDF", "read";
@@ -3496,7 +3502,7 @@ index 00000000000..f8d505ca815
 +}
 \ No newline at end of file
 diff --git a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java
-index e05892e2c22..cb40c3bf794 100644
+index 006aa67f621..fd86a52e65c 100644
 --- a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java
 +++ b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/P11Key.java
 @@ -37,6 +37,8 @@ import javax.crypto.*;
@@ -4072,7 +4078,7 @@ index cabee449346..72b64f72c0a 100644
          // empty
      }
 diff --git a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java
-index 00fbbcfe07c..b5a30c6da4e 100644
+index 19f89ad5f38..a55c890b93d 100644
 --- a/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java
 +++ b/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/SunPKCS11.java
 @@ -26,6 +26,9 @@
@@ -4411,7 +4417,7 @@ index 00fbbcfe07c..b5a30c6da4e 100644
          d(SIG, "RawDSA",        P11Signature,
                  List.of("NONEwithDSA"),
                  m(CKM_DSA));
-@@ -1120,9 +1332,21 @@ public final class SunPKCS11 extends AuthProvider {
+@@ -1122,9 +1334,21 @@ public final class SunPKCS11 extends AuthProvider {
                  continue;
              }
              boolean allowLegacy = config.getAllowLegacy();
@@ -4433,7 +4439,7 @@ index 00fbbcfe07c..b5a30c6da4e 100644
  
                      // assume full support if no mech info available
                      if (!allowLegacy && mechInfo != null) {
-@@ -1211,11 +1435,52 @@ public final class SunPKCS11 extends AuthProvider {
+@@ -1213,11 +1437,52 @@ public final class SunPKCS11 extends AuthProvider {
          }
  
          @Override
@@ -4486,7 +4492,7 @@ index 00fbbcfe07c..b5a30c6da4e 100644
              try {
                  return newInstance0(param);
              } catch (PKCS11Exception e) {
-@@ -1235,6 +1500,8 @@ public final class SunPKCS11 extends AuthProvider {
+@@ -1237,6 +1502,8 @@ public final class SunPKCS11 extends AuthProvider {
                  } else if (algorithm.endsWith("GCM/NoPadding") ||
                             algorithm.startsWith("ChaCha20-Poly1305")) {
                      return new P11AEADCipher(token, algorithm, mechanism);
@@ -4495,7 +4501,7 @@ index 00fbbcfe07c..b5a30c6da4e 100644
                  } else {
                      return new P11Cipher(token, algorithm, mechanism);
                  }
-@@ -1570,6 +1837,9 @@ public final class SunPKCS11 extends AuthProvider {
+@@ -1574,6 +1841,9 @@ public final class SunPKCS11 extends AuthProvider {
          try {
              session = token.getOpSession();
              p11.C_Logout(session.id());
@@ -5266,10 +5272,10 @@ index 0d65ee26805..38fd4aff1f3 100644
 +                                        /* (CKM_NSS + 32) */ = 0xCE534370L;
  }
 diff --git a/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_convert.c b/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_convert.c
-index 3ea91a6cfd1..26309f4f7b2 100644
+index 376fd999261..d2b2b2e8013 100644
 --- a/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_convert.c
 +++ b/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_convert.c
-@@ -1518,6 +1518,10 @@ CK_VOID_PTR jMechParamToCKMechParamPtrSlow(JNIEnv *env, jobject jParam,
+@@ -1517,6 +1517,10 @@ CK_VOID_PTR jMechParamToCKMechParamPtrSlow(JNIEnv *env, jobject jParam,
          case CKM_PBE_SHA1_DES3_EDE_CBC:
          case CKM_PBE_SHA1_DES2_EDE_CBC:
          case CKM_PBA_SHA1_WITH_SHA1_HMAC:
@@ -5280,7 +5286,7 @@ index 3ea91a6cfd1..26309f4f7b2 100644
              ckpParamPtr = jPbeParamToCKPbeParamPtr(env, jParam, ckpLength);
              break;
          case CKM_PKCS5_PBKD2:
-@@ -1661,13 +1665,13 @@ jPbeParamToCKPbeParamPtr(JNIEnv *env, jobject jParam, CK_ULONG *pLength)
+@@ -1660,13 +1664,13 @@ jPbeParamToCKPbeParamPtr(JNIEnv *env, jobject jParam, CK_ULONG *pLength)
      // retrieve java values
      jPbeParamsClass = (*env)->FindClass(env, CLASS_PBE_PARAMS);
      if (jPbeParamsClass == NULL) { return NULL; }
@@ -5296,7 +5302,7 @@ index 3ea91a6cfd1..26309f4f7b2 100644
      if (fieldID == NULL) { return NULL; }
      jSalt = (*env)->GetObjectField(env, jParam, fieldID);
      fieldID = (*env)->GetFieldID(env, jPbeParamsClass, "ulIteration", "J");
-@@ -1683,15 +1687,15 @@ jPbeParamToCKPbeParamPtr(JNIEnv *env, jobject jParam, CK_ULONG *pLength)
+@@ -1682,15 +1686,15 @@ jPbeParamToCKPbeParamPtr(JNIEnv *env, jobject jParam, CK_ULONG *pLength)
  
      // populate using java values
      ckParamPtr->ulIteration = jLongToCKULong(jIteration);
@@ -5315,7 +5321,7 @@ index 3ea91a6cfd1..26309f4f7b2 100644
      if ((*env)->ExceptionCheck(env)) {
          goto cleanup;
      }
-@@ -1770,31 +1774,59 @@ void copyBackPBEInitializationVector(JNIEnv *env, CK_MECHANISM *ckMechanism, job
+@@ -1769,31 +1773,59 @@ void copyBackPBEInitializationVector(JNIEnv *env, CK_MECHANISM *ckMechanism, job
      }
  }
  
@@ -5384,7 +5390,7 @@ index 3ea91a6cfd1..26309f4f7b2 100644
      fieldID = (*env)->GetFieldID(env, jPkcs5Pbkd2ParamsClass, "saltSource", "J");
      if (fieldID == NULL) { return NULL; }
      jSaltSource = (*env)->GetLongField(env, jParam, fieldID);
-@@ -1810,36 +1842,60 @@ jPkcs5Pbkd2ParamToCKPkcs5Pbkd2ParamPtr(JNIEnv *env, jobject jParam, CK_ULONG *pL
+@@ -1809,36 +1841,60 @@ jPkcs5Pbkd2ParamToCKPkcs5Pbkd2ParamPtr(JNIEnv *env, jobject jParam, CK_ULONG *pL
      fieldID = (*env)->GetFieldID(env, jPkcs5Pbkd2ParamsClass, "pPrfData", "[B");
      if (fieldID == NULL) { return NULL; }
      jPrfData = (*env)->GetObjectField(env, jParam, fieldID);
@@ -5458,7 +5464,7 @@ index 3ea91a6cfd1..26309f4f7b2 100644
      return NULL;
  
 diff --git a/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_util.c b/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_util.c
-index 84edb3c5105..0f49657ada1 100644
+index 537bab224a0..3fd23558d3b 100644
 --- a/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_util.c
 +++ b/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_util.c
 @@ -410,11 +410,27 @@ void freeCKMechanismPtr(CK_MECHANISM_PTR mechPtr) {

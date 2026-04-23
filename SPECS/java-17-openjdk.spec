@@ -324,7 +324,7 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 18
+%global updatever 19
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
@@ -364,7 +364,7 @@
 # Define IcedTea version used for SystemTap tapsets and desktop file
 %global icedteaver      6.0.0pre00-c848b93a8598
 # Define current Git revision for the FIPS support patches
-%global fipsver df4c415ac9a
+%global fipsver 62c0f885e30
 %global javaver         %{featurever}
 %global newjavaver %{featurever}.%{interimver}.%{updatever}.%{patchver}
 
@@ -379,7 +379,7 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver 8
+%global buildver 10
 %global rpmrelease 1
 # Settings used by the portable build
 %global portablerelease 1
@@ -1125,8 +1125,8 @@ Requires: ca-certificates
 # Require javapackages-filesystem for ownership of /usr/lib/jvm/ and macros
 Requires: javapackages-filesystem
 # Require zone-info data provided by tzdata-java sub-package
-# 2025b required as of JDK-8352716
-Requires: tzdata-java >= 2025b
+# 2026a required as of JDK-8379035
+Requires: tzdata-java >= 2026a
 # for support of kernel stream control
 # libsctp.so.1 is being `dlopen`ed on demand
 Requires: lksctp-tools%{?_isa}
@@ -1323,6 +1323,7 @@ Source18: TestTranslations.java
 # Include portable spec and instructions on how to rebuild
 Source19: README.md
 Source20: java-%{featurever}-openjdk-portable.specfile
+Source21: NEWS
 
 # Setup variables to reference correct sources
 %global releasezip %{_jvmdir}/%{name}-%{version}-%{prelease}.portable.unstripped.jdk.%{_arch}.tar.xz
@@ -1392,6 +1393,7 @@ Patch1:    rh1648242-accessible_toolkit_crash_do_not_break_jvm.patch
 # test/jdk/sun/security/pkcs11/fips/VerifyMissingAttributes.java: fixed jtreg main class (#27)
 # RH1940064: Enable XML Signature provider in FIPS mode (#24)
 # RH2173781: Avoid calling C_GetInfo() too early, before cryptoki is initialized (#26)
+# OPENJDK-4398: Update nss.fips.cfg to grant CKA_SIGN and CKA_ENCRYPT to any CKO_SECRET_KEY (#44)
 Patch1001: fips-%{featurever}u-%{fipsver}.patch
 
 #############################################
@@ -1456,8 +1458,8 @@ BuildRequires: java-%{featurever}-openjdk-portable-misc = %{epoch}:%{version}-%{
 %ifarch %{zero_arches}
 BuildRequires: libffi-devel
 %endif
-# 2025b required as of JDK-8352716
-BuildRequires: tzdata-java >= 2025b
+# 2026a required as of JDK-8379035
+BuildRequires: tzdata-java >= 2026a
 # Earlier versions have a bug in tree vectorization on PPC
 BuildRequires: gcc >= 4.8.3-8
 
@@ -1476,19 +1478,19 @@ BuildRequires: libpng-devel
 BuildRequires: zlib-devel
 %else
 # Version in src/java.desktop/share/native/libfreetype/include/freetype/freetype.h
-Provides: bundled(freetype) = 2.13.3
+Provides: bundled(freetype) = 2.14.2
 # Version in src/java.desktop/share/native/libsplashscreen/giflib/gif_lib.h
-Provides: bundled(giflib) = 5.2.2
+Provides: bundled(giflib) = 6.1.2
 # Version in src/java.desktop/share/native/libharfbuzz/hb-version.h
-Provides: bundled(harfbuzz) = 11.2.0
+Provides: bundled(harfbuzz) = 12.3.2
 # Version in src/java.desktop/share/native/liblcms/lcms2.h
 Provides: bundled(lcms2) = 2.17.0
 # Version in src/java.desktop/share/native/libjavajpeg/jpeglib.h
 Provides: bundled(libjpeg) = 6b
 # Version in src/java.desktop/share/native/libsplashscreen/libpng/png.h
-Provides: bundled(libpng) = 1.6.51
+Provides: bundled(libpng) = 1.6.57
 # Version in src/java.base/share/native/libzip/zlib/zlib.h
-Provides: bundled(zlib) = 1.3.1
+Provides: bundled(zlib) = 1.3.2
 %endif
 
 # this is always built, also during debug-only build
@@ -2498,6 +2500,34 @@ cjc.mainProgram(args)
 %endif
 
 %changelog
+* Thu Apr 16 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.19.0.10-1
+- Update to jdk-17.0.19+10 (GA)
+- Add to .gitignore openjdk-17.0.19+10.tar.xz
+- Set updatever to 19
+- Set buildver to 10
+- Set rpmrelease to 1
+- Update sources to openjdk-17.0.19+10.tar.xz
+- ** This tarball is embargoed until 2026-04-21 @ 1pm PT. **
+- Set tzdata requires and build requires to 2026a
+- Set bundled freetype library version to 2.14.2
+- Set bundled giflib library version to 6.1.2
+- Set bundled harfbuzz library version to 12.3.2
+- Set bundled libpng library version to 1.6.57
+- Set bundled zlib library version to 1.3.2
+- Set fipsver to e1780dd5d39
+- Set fipsver to 62c0f885e30
+- Sync NEWS from openjdk-portable-rhel-8
+- Sync java-17-openjdk-portable.specfile from openjdk-portable-rhel-8
+- Resolves: RHEL-133224
+- Resolves: RHEL-146657
+- Resolves: RHEL-148336
+- Resolves: RHEL-148850
+- Resolves: RHEL-161226
+- Resolves: RHEL-161342
+- Resolves: RHEL-157099
+- Resolves: RHEL-157153
+- Resolves: RHEL-157160
+
 * Fri Jan 16 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.18.0.8-1
 - Update to jdk-17.0.18+8 (GA)
 - Add to .gitignore openjdk-17.0.18+8.tar.xz
