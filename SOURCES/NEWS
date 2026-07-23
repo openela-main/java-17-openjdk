@@ -3,11 +3,290 @@ Key:
 JDK-X  - https://bugs.openjdk.java.net/browse/JDK-X
 CVE-XXXX-YYYY: https://cve.mitre.org/cgi-bin/cvename.cgi?name=XXXX-YYYY
 
+New in release OpenJDK 17.0.20 (2026-07-21):
+============================================
+Live versions of these release notes can be found at:
+  * https://bit.ly/openjdk17020
+
+* Changes
+  - JDK-7184899: Test sun/java2d/X11SurfaceData/SharedMemoryPixmapsTest/SharedMemoryPixmapsTest.sh fail
+  - JDK-8015444: java/awt/Focus/KeyStrokeTest.java sometimes fails
+  - JDK-8064922: [macos] Test javax/swing/JTabbedPane/4624207/bug4624207.java fails
+  - JDK-8068293: [TEST_BUG] Test closed/com/sun/java/swing/plaf/motif/InternalFrame/4150591/bug4150591.java fails with GTKLookAndFeel
+  - JDK-8068310: [TEST_BUG] Test javax/swing/JColorChooser/Test4234761.java fails with GTKL&F
+  - JDK-8068378: [TEST_BUG]The java/awt/Modal/PrintDialogsTest/PrintDialogsTest.java instruction need to update
+  - JDK-8183336: Better cleanup for jdk/test/java/lang/module/customfs/ModulesInCustomFileSystem.java
+  - JDK-8221451: PIT: sun/java2d/X11SurfaceData/SharedMemoryPixmapsTest/SharedMemoryPixmapsTest.sh fails
+  - JDK-8240908: RetransformClass does not know about MethodParameters attribute
+  - JDK-8255463: java/nio/channels/spi/SelectorProvider/inheritedChannel/InheritedChannelTest.java failed with ThreadTimeoutException
+  - JDK-8272477: Additional cleanup of test/jdk/java/nio/file/spi/SetDefaultProvider.java
+  - JDK-8274082: Wrong test name in jtreg run tag for java/awt/print/PrinterJob/SwingUIText.java
+  - JDK-8277444: Data race between JvmtiClassFileReconstituter::copy_bytecodes and class linking
+  - JDK-8281243: Test java/lang/instrument/RetransformWithMethodParametersTest.java is failing
+  - JDK-8282044: [JVMCI] Export _sha3_implCompress, _md5_implCompress and aarch64::_has_negatives stubs to JVMCI compiler.
+  - JDK-8284993: Replace System.exit call in swing tests with RuntimeException
+  - JDK-8286258: [Accessibility,macOS,VoiceOver] VoiceOver reads the spinner value wrong and sometime partially
+  - JDK-8286865: vmTestbase/vm/mlvm/meth/stress/jni/nativeAndMH/Test.java fails with Out of space in CodeCache
+  - JDK-8287062: com/sun/jndi/ldap/LdapPoolTimeoutTest.java failed due to different timeout message
+  - JDK-8290504: Close streams returned by ModuleReader::list
+  - JDK-8293484: AArch64: TestUseSHA512IntrinsicsOptionOnSupportedCPU.java fails on CPU with SHA512 feature support
+  - JDK-8297191: [macos] Printing a page range with starting page > 1 results in missing pages
+  - JDK-8298783: java/lang/ref/FinalizerHistogramTest.java failed with "RuntimeException: MyObject is not found in test output"
+  - JDK-8298823: [macos] java/awt/Mouse/EnterExitEvents/DragWindowTest.java continues to fail with "No MouseReleased event on label!"
+  - JDK-8299304: Test "java/awt/print/PrinterJob/PageDialogTest.java" fails on macOS 13 x64 because the Page Dialog blocks the Toolkit
+  - JDK-8304065: HttpServer.stop should terminate immediately if no exchanges are in progress
+  - JDK-8309142: Refactor test/langtools/tools/javac/versions/Versions.java
+  - JDK-8316274: javax/swing/ButtonGroup/TestButtonGroupFocusTraversal.java fails in Ubuntu 23.10 with Motif LAF
+  - JDK-8317801: java/net/Socket/asyncClose/Race.java fails intermittently (aix)
+  - JDK-8320677: Printer tests use invalid '@run main/manual=yesno
+  - JDK-8321182: SourceExample.SOURCE_14 comment should refer to 'switch expressions' instead of 'text blocks'
+  - JDK-8321303: Intermittent open/test/jdk/java/awt/KeyboardFocusmanager/ConsumeNextMnemonicKeyTypedTest/ConsumeNextMnemonicKeyTypedTest.java failure on Linux
+  - JDK-8323089: networkaddress.cache.ttl is not a system property
+  - JDK-8323545: java/awt/GraphicsDevice/CheckDisplayModes.java fails with "exit code: 133"
+  - JDK-8323672: Suppress unwanted autoconf added flags in CC and CXX
+  - JDK-8324345: Stack overflow during C2 compilation when splitting memory phi
+  - JDK-8324641: [IR Framework] Add Setup method to provide custom arguments and set fields
+  - JDK-8328300: Convert PrintDialogsTest.java from Applet to main program
+  - JDK-8332495: java/util/logging/LoggingDeadlock2.java fails with AssertionError: Some tests failed
+  - JDK-8334928: Test sun/security/ssl/SSLSocketImpl/ReuseAddr.java failed: java.net.BindException: Address already in use
+  - JDK-8337876: [IR Framework] Add support for IR tests with @Stable
+  - JDK-8338103: Stabilize and open source a Swing OGL ButtonResizeTest
+  - JDK-8338112: Test testlibrary_tests/ir_framework/tests/TestPrivilegedMode.java fails with release build
+  - JDK-8338344: Test TestPrivilegedMode.java intermittent fails java.lang.NoClassDefFoundError: jdk/test/lib/Platform
+  - JDK-8338554: Fix inconsistencies in javadoc/doclet/testLinkOption/TestRedirectLinks.java
+  - JDK-8338883: Show warning when CreateCoredumpOnCrash set, but core dump will not happen
+  - JDK-8339233: Test javax/swing/JButton/SwingButtonResizeTestWithOpenGL.java#id failed: Button renderings are different after window resize
+  - JDK-8339238: Update to use jtreg 7.5.1
+  - JDK-8339879: Open some dialog awt tests
+  - JDK-8339975: Open some dialog awt tests 2
+  - JDK-8340140: Open some dialog awt tests 3
+  - JDK-8340336: Open some checkbox awt tests
+  - JDK-8340494: Open some dialog awt tests 4
+  - JDK-8340851: Open some TextArea awt tests
+  - JDK-8340987: Open some TextArea awt tests 1
+  - JDK-8341055: Open some TextArea awt tests 2
+  - JDK-8341292: Open some TextArea awt tests 3
+  - JDK-8341376: Open some TextArea awt tests 4
+  - JDK-8341427: JFR: Adjust object sampler span handling
+  - JDK-8342401: [TESTBUG] javax/swing/JSpinner/8223788/JSpinnerButtonFocusTest.java test fails in ubuntu 22.04 on SBR Hosts
+  - JDK-8345618: javax/swing/text/Caret/8163124/CaretFloatingPointAPITest.java leaves Caret is not complete
+  - JDK-8346154: [XWayland] Some tests fail intermittently in the CI, but not locally
+  - JDK-8347811: Container detection code for cgroups v2 should use cgroup.controllers
+  - JDK-8347836: Disabled PopupMenu shows shortcuts on Mac
+  - JDK-8349192: jvmti/scenarios/contention/TC05/tc05t001 fails: ERROR: tc05t001.cpp, 281: (waitedThreadCpuTime - waitThreadCpuTime) < (EXPECTED_ACCURACY * 1000000)
+  - JDK-8349533: Refactor validator tests shell files to java
+  - JDK-8349988: Change cgroup version detection logic to not depend on /proc/cgroups
+  - JDK-8350749: Upgrade JLine to 3.29.0
+  - JDK-8352685: Opensource JInternalFrame tests - series2
+  - JDK-8352733: Improve RotFontBoundsTest test
+  - JDK-8352877: Opensource Several Font related tests - Batch 1
+  - JDK-8353488: Open some JComboBox bugs 3
+  - JDK-8353552: Opensource Several Font related tests - Batch 3
+  - JDK-8354163: Open source Swing tests Batch 1
+  - JDK-8354469: Keytool exposes the password in plain text when command is piped using | grep
+  - JDK-8354695: Open source several swing tests batch7
+  - JDK-8354878: File Leak in CgroupSubsystemFactory::determine_type of cgroupSubsystem_linux.cpp:300
+  - JDK-8354900: javax/swing/AbstractButton/bug4133768.java failing on macosx-aarch64
+  - JDK-8355048: ProblemList TestGlyphVectorLayout.java on all platforms
+  - JDK-8355179: Reinstate javax/swing/JScrollBar/4865918/bug4865918.java headful and macos run
+  - JDK-8355332: Fix failing semi-manual test EDT issue
+  - JDK-8355443: [java.io] Use @requires tag instead of exiting based on File.separatorChar value
+  - JDK-8355445: [java.nio] Use @requires tag instead of exiting based on "os.name" property value
+  - JDK-8356107: [java.lang] Use @requires tag instead of exiting based on os.name or separatorChar property
+  - JDK-8357062: Update Public Suffix List to 823beb1
+  - JDK-8357082: Stabilize and add debug logs to CopyAreaOOB.java
+  - JDK-8357141: Update to use jtreg 7.5.2
+  - JDK-8357280: (bf) Remove @requires tags from java/nio/Buffer/LimitDirectMemory[NegativeTest].java
+  - JDK-8357390: java/awt/Toolkit/ScreenInsetsTest/ScreenInsetsTest.java Test failing on Ubuntu 24.04 Vm Hosts used by Oracle's internal CI system
+  - JDK-8358058: sun/java2d/OpenGL/DrawImageBg.java Test fails intermittently
+  - JDK-8358751: C2: Recursive inlining check for compiled lambda forms is broken
+  - JDK-8359978: Test javax/net/ssl/SSLSocket/Tls13PacketSize.java failed again with java.net.SocketException: An established connection was aborted by the software in your host machine
+  - JDK-8360160: ubuntu-22-04 machine is failing client tests
+  - JDK-8360882: Tests throw SkippedException when they should fail
+  - JDK-8361106: [TEST] com/sun/net/httpserver/Test9.java fails with java.nio.file.FileSystemException
+  - JDK-8361606: ConsumeNextMnemonicKeyTypedTest.java fails on Windows: character typed with VK_A: a
+  - JDK-8362428: Update IANA Language Subtag Registry to Version 2025-08-25
+  - JDK-8364190: JFR: RemoteRecordingStream withers don't work
+  - JDK-8364315: Remove unused xml files from test/jaxp/javax/xml/jaxp/functional/javax/xml/transform/xmlfiles
+  - JDK-8364927: Add @requires annotation to TestReclaimStringsLeaksMemory.java
+  - JDK-8365379: SU3.applyInsets may produce wrong results
+  - JDK-8365423: [macos26] java/awt/MenuBar/8007006/bug8007006.java fails on macOS 26
+  - JDK-8365424: [macos26] java/awt/Frame/DisposeTest.java fails on macOS 26
+  - JDK-8365526: Crash with null Symbol passed to SystemDictionary::resolve_or_null
+  - JDK-8365625: Can't change accelerator colors in Windows L&F
+  - JDK-8366128: jdk/jdk/nio/zipfs/TestPosix.java::testJarFile uses wrong file
+  - JDK-8366261: Provide utility methods for sun.security.util.Password
+  - JDK-8366369: Add @requires linux for GTK L&F tests
+  - JDK-8366852: java/awt/Choice/ChoiceMouseWheelTest/ChoiceMouseWheelTest.java test is failing
+  - JDK-8367583: sun/security/util/AlgorithmConstraints/InvalidCryptoDisabledAlgos.java fails after JDK-8244336
+  - JDK-8367772: Refactor createUI in PassFailJFrame
+  - JDK-8367784: java/awt/Focus/InitialFocusTest/InitialFocusTest1.java failed with Wrong focus owner
+  - JDK-8368041: Enhance TLS certificate handling
+  - JDK-8368335: Refactor the rest of Locale TestNG based tests to JUnit
+  - JDK-8368498: Use JUnit instead of TestNG for jdk_text tests
+  - JDK-8368551: Core dump warning may be confusing
+  - JDK-8368670: Deadlock in JFR on event register + class load
+  - JDK-8368683: [process] Increase jtreg debug output maxOutputSize for TreeTest
+  - JDK-8368754: runtime/cds/appcds/SignedJar.java log regex is too strict
+  - JDK-8368885: NMT CommandLine tests can check for error better
+  - JDK-8368892: Make JEditorPane/TestBrowserBGColor.java headless
+  - JDK-8369251: Opensource few tests
+  - JDK-8369319: java/net/httpclient/CancelRequestTest.java fails intermittently
+  - JDK-8369335: Two  sun/java2d/OpenGL tests fail on Windows after JDK-8358058
+  - JDK-8369561: sun/java2d/OpenGL/DrawBitmaskImage.java#id0: Incorrect color for first pixel (actual=ff000000)
+  - JDK-8369851: Remove darcy author tags from langtools tests
+  - JDK-8369858: Remove darcy author tags from jdk tests
+  - JDK-8369911: Test sun/java2d/marlin/ClipShapeTest.java#CubicDoDash, #Cubic and #Poly fail intermittent
+  - JDK-8369950: TLS connection to IPv6 address fails with BCJSSE due to IllegalArgumentException
+  - JDK-8370325: G1: Disallow GC for TLAB allocation
+  - JDK-8370511: test/jdk/javax/swing/JSlider/bug4382876.java does not release previously pressed keys
+  - JDK-8370732: Use WhiteBox.getWhiteBox().fullGC() to provoking gc for nsk/jvmti tests
+  - JDK-8370942: test/jdk/java/security/Provider/NewInstance.java and /test/jdk/java/security/cert/CertStore/NoLDAP.java may skip without notifying
+  - JDK-8371365: Update javax/swing/JFileChooser/bug4759934.java to use Util.findComponent()
+  - JDK-8371366: java/net/httpclient/whitebox/RawChannelTestDriver.java fails intermittently in jtreg timeout
+  - JDK-8371383: Test sun/security/tools/jarsigner/DefaultOptions.java failed due to CertificateNotYetValidException
+  - JDK-8371503: RETAIN_IMAGE_AFTER_TEST do not work for some tests
+  - JDK-8372120: Add missing sound keyword to MIDI tests
+  - JDK-8372351: Add 2 WISeKey roots
+  - JDK-8372609: Bug4944439 does not enforce locale correctly
+  - JDK-8372661: Add a null-safe static factory method to "jdk.test.lib.net.SimpleSSLContext"
+  - JDK-8372988: Test runtime/Nestmates/membership/TestNestHostErrorWithMultiThread.java failed: Unexpected interrupt
+  - JDK-8373101: JdkClient and JdkServer test classes ignore namedGroups field
+  - JDK-8373239: Test java/awt/print/PrinterJob/PageRanges.java fails with incorrect selection of printed pages
+  - JDK-8373275: Improve DTLS handshaking
+  - JDK-8373623: Refactor Serialization tests for Records to JUnit
+  - JDK-8373650: Test "javax/swing/JMenuItem/6458123/ManualBug6458123.java" fails because the check icons are not aligned properly as expected
+  - JDK-8373690: Unexpected Keystore message using jdk.crypto.disabledAlgorithms
+  - JDK-8373716: Refactor further java/util tests from TestNG to JUnit
+  - JDK-8373807: test/jdk/java/net/httpclient/websocket/DummyWebSocketServer.java getURI() uses "localhost"
+  - JDK-8373847: Test javax/swing/JMenuItem/MenuItemTest/bug6197830.java failed because The test case automatically fails when clicking any items in the “Nothing” menu in all four windows (Left-to-right)-Menu Item Test and (Right-to-left)-Menu Item Test
+  - JDK-8373869: Refactor java/net/httpclient/ThrowingPushPromises*.java tests to use JUnit5
+  - JDK-8373928: 4 Dangling pointer defect groups in java.c
+  - JDK-8373931: Test javax/sound/sampled/Clip/AutoCloseTimeCheck.java timed out
+  - JDK-8374058: Enhance JPEG handling
+  - JDK-8374178: Missing include in systemDictionary.cpp after JDK-8365526
+  - JDK-8374304: MultiResolutionSplashTest.java fails in CI: "Image with wrong resolution is used for splash screen!"
+  - JDK-8374433: java/util/Locale/PreserveTagCase.java does not run any tests
+  - JDK-8374506: Incorrect positioning of arrow icon in parent JMenu in Windows L&F
+  - JDK-8374548: Process httpserver cancelled keys more quickly
+  - JDK-8374555: No need for visible input warning in s.s.u.Password when not reading from System.in
+  - JDK-8374711: Hotspot runtime/CommandLine/OptionsValidation/TestOptionsWithRanges fails without printing the option name
+  - JDK-8374888: Implement internal test cache to help UserIterCount test performance
+  - JDK-8374998: Failing os::write - remove bad file
+  - JDK-8375065: Update LCMS to 2.18
+  - JDK-8375080: The tools/jpackage/windows/Win8365790Test.java may fail with ClassNotFoundException: jtreg.SkippedException
+  - JDK-8375231: Refactor util/ServiceLoader tests to use JUnit
+  - JDK-8375232: Refactor util/StringJoiner tests to use JUnit
+  - JDK-8375233: Refactor util/Vector tests to use JUnit
+  - JDK-8375999: com/sun/jndi/ldap/LdapPoolTimeoutTest.java fails sporadically on Windows
+  - JDK-8376031: HttpsURLConnection.getServerCertificates() throws "java.lang.IllegalStateException: connection not yet open" for the HEAD method
+  - JDK-8376152: Test javax/sound/sampled/Clip/bug5070081.java timed out then completed
+  - JDK-8376233: Clean up code in Desktop native peer
+  - JDK-8377158: Enhance XBM image support
+  - JDK-8377167: javax/imageio/ReadAbortTest.java throw NPE when x11 unavailable
+  - JDK-8377498: Improve HttpServer handling
+  - JDK-8377602: Create automated test for PageRange
+  - JDK-8377678: G1: Heap Dumping crashes with -UseClassUnloading
+  - JDK-8377727: Ghost caret and focus appear in non‑editable text fields
+  - JDK-8377833: Enhance Jar file processing
+  - JDK-8377910: Minor cleanup of java/io/FileDescriptor/Sharing.java
+  - JDK-8377944: LowMemoryTest2.java#id1 intermittent fails OOME: Metaspace
+  - JDK-8378113: Add sun/java2d/OpenGL/ScaleParamsOOB.java to the ProblemList.txt file
+  - JDK-8378201: [OGL] glXMakeContextCurrent() drops the buffers of the unbound drawable
+  - JDK-8378417: Printing All pages results in NPE for 1.1 PrintJob
+  - JDK-8378687: Improve delegation of HttpURLConnection
+  - JDK-8378777: Bump update version for OpenJDK: jdk-17.0.20
+  - JDK-8378802: [21u] backport changes to TKit.java by JDK-8352419
+  - JDK-8380316: Test runtime/os/AvailableProcessors.java fails Invalid argument
+  - JDK-8380565: PPC64: deoptimization stub should save vector registers
+  - JDK-8380672: Improve certification checking
+  - JDK-8380947: Add pull request template
+  - JDK-8381039: Enhance AWT ImagingLib
+  - JDK-8381049: Enhance Jar handling
+  - JDK-8381205: GHA: Upgrade Node.js 20 to 24
+  - JDK-8381519: Enhance Der Value Handling
+  - JDK-8381796: Enhance Certificate parsing
+  - JDK-8382242: JFR: Metadata reconstruction invalidates ConstantMap for java.lang.String
+  - JDK-8383175: (tz) Update Timezone Data to 2026b
+  - JDK-8383354: Update LCMS to 2.19.1
+  - JDK-8383473: Follow on from tzdata2026b time change to include temporary hack BC time change
+  - JDK-8383601: RISC-V: ShenandoahBarrierSetAssembler::load_reference_barrier calls "weak" on "phantom" path
+  - JDK-8383630: Fix iteration in tests doing class redefinition
+  - JDK-8383659: [17u] JVM crashes during stub routines generation on Windows and rare combination of CPU features
+  - JDK-8384158: GHA: Downgrade Windows GHA runners to windows-2022 temporarily
+  - JDK-8384486: NTLM tests fail on Windows 11 and Windows Server 2025
+  - JDK-8384495: Update Libpng to 1.6.58
+  - JDK-8384540: [25u, 21u, 17u] Update GHA JDKs after Apr/26 updates
+  - JDK-8384815: SelectOneKeyOutOfMany and PreferredKey fail after expired test certificate
+  - JDK-8384902: Update GIFlib to 6.1.3
+  - JDK-8385390: Update FreeType to 2.14.3
+  - JDK-8385490: Update HarfBuzz to 14.2.0
+  - JDK-8386343: [17u] Fix NTLMHeadTest after backport of 8384486
+  - JDK-8386551: Windows build broken because of MSys2/Make update
+
+Notes on individual issues:
+===========================
+
+security-libs/java.security:
+
+JDK-8354469: Keytool exposes the password in plain text when command is piped using | grep
+==========================================================================================
+The `keytool` and `jarsigner` commands read passwords using the system
+console with echoing disabled to avoid them being displayed on screen.
+However, the system console is usually only available when both the
+standard input and standard output have *not* been redirected.  In
+previous OpenJDK releases, running these tools with input or output
+redirected would cause the password to be echoed to the screen in
+plain text.  With this release, echoing no longer takes place in such
+scenarios when using these tools or the JAAS `TextCallbackHandler`
+API.
+
+JDK-8372351: Add 2 WISeKey roots
+================================
+The following root certificates have been added to the cacerts
+truststore:
+
+Alias Name: wisekeyglobalrootgbca
+Distinguished Name: CN=OISTE WISeKey Global Root GB CA, OU=OISTE Foundation Endorsed, O=WISeKey, C=CH
+Serial Number: 76b1205274f0858746b3f8231af6c2c0
+Valid From: Mon Dec 01 15:00:32 GMT 2014
+Valid Until: Thu Dec 01 15:10:31 GMT 2039
+
+Alias Name: wisekeyglobalrootgcca
+Distinguished Name: CN=OISTE WISeKey Global Root GC CA, OU=OISTE Foundation Endorsed, O=WISeKey, C=CH
+Serial Number: 212a560caeda0cab4045bf2ba22d3aea
+Valid From: Tue May 09 09:48:34 GMT 2017
+Valid Until: Fri May 09 09:58:33 GMT 2042
+
+JDK-8381796: Enhance Certificate parsing
+========================================
+With this release of OpenJDK, a security and system property
+`com.sun.security.crl.maxSize` is introduced which acts as a maximum
+size limit on a Certificate Revocation List (CRL) downloaded over the
+network.  For URICertStore requests, the value is the maximum size in
+bytes of the DER-encoded CRL.  For LDAPCertStore queries, the
+threshold is the sum of all CRLs downloaded from a single search.  By
+default, the maximum size is 20MiB (20971520 bytes) and CRLs larger
+than this will be discarded.  A value less than zero may be used to
+turn off the size limit and non-numeric values will be ignored.  A
+non-empty value for the system property takes precedence over the
+security property.  Enabling 'certpath' debug logging will output the
+current size limit and note any discarded CRLs.
+
 New in release OpenJDK 17.0.19 (2026-04-21):
 ============================================
 Live versions of these release notes can be found at:
   * https://bit.ly/openjdk17019
 
+* CVEs
+  - CVE-2026-22007
+  - CVE-2026-22013
+  - CVE-2026-22016
+  - CVE-2026-22018
+  - CVE-2026-22021
+  - CVE-2026-23865
+  - CVE-2026-34268
+  - CVE-2026-34282
 * Changes
   - JDK-6899304: java.awt.Toolkit.getScreenInsets(GraphicsConfiguration) returns incorrect values
   - JDK-7036144: GZIPInputStream readTrailer uses faulty available() test for end-of-stream
@@ -120,37 +399,53 @@ Live versions of these release notes can be found at:
   - JDK-8380078: Update GIFlib to 6.1.2
   - JDK-8380959: Update Libpng to 1.6.56
   - JDK-8382047: Update Libpng to 1.6.57
+  - JDK-8382440: [17u] Remove designator DEFAULT_PROMOTED_VERSION_PRE=ea for release 17.0.19
 
 Notes on individual issues:
 ===========================
 
 tools/javac:
 
-JDK-8341779: Type annotations are not visible to javac plugins across compilation boundaries
-============================================================================================
-`TypeMirror` now provides access to annotations for types loaded from
-bytecode. Programs that relied on annotations not being present in
-loaded bytecode need to be updated to handle them.
+JDK-8341779: Type annotations are not visible to javac plugins across compilation boundaries (JDK-8225377)
+==========================================================================================================
+The compiler in previous releases of OpenJDK 17 would only provide
+access to type annotations on types loaded from source code files.  If
+the type was instead loaded from bytecode, then any type annotations
+would be absent.
+
+With this release, `TypeMirror` now provides access to annotations for
+types loaded from bytecode.  These type annotations can be obtained
+using `AnnotationMirror#getAnnotationMirrors` and will be included in
+the output of `AnnotationMirror#toString`.
+
+Programs that rely on type annotations being absent from elements
+loaded from bytecode will need to be updated accordingly. Due to
+ongoing issues with this new feature (see JDK-8360406), it is not
+enabled by default and the option `-XDaddTypeAnnotationsToSymbol=true`
+must be specified in order for bytecode type annotations to be
+included.
 
 core-libs/java.util.jar:
 
 JDK-7036144: GZIPInputStream readTrailer uses faulty available() test for end-of-stream
 =======================================================================================
-`GZipInputStream`'s `read` methods will now check for a GZIP stream
-header in additional data in the internal `InputStream`, instead of
-using InputStream.available().
+The `GZIPInputStream` class supports concatenated GZIP streams and
+will attempt to start reading a new stream after the previous one
+ends.  This attempt was conditional on `InputStream.available()`
+returning a value greater than zero, but this method only returns an
+estimate of the number of bytes that can be read without blocking.
+With this release, the test is removed and reading a new stream is
+always attempted.
 
 security-libs/javax.net.ssl:
 
 JDK-8328608: Multiple NewSessionTicket support for TLS
 ======================================================
-This JDK version introduces a new system property,
-`jdk.tls.server.newSessionTicketCount`. It can be used to set the
-number of TLSv1.3 resumption tickets sent per session by a JSSE
-server. The default is 1 and the valid range is [0, 10].
-
-See also "Customizing JSSE" at
-https://docs.oracle.com/en/java/javase/24/security/java-secure-socket-extension-jsse-reference-guide.html#GUID-A41282C3-19A3-400A-A40F-86F4DA22ABA9
+With this release of OpenJDK, the number of TLSv1.3 resumption tickets
+sent by a JSSE server per session can now be configured.  The new
+system property `jdk.tls.server.newSessionTicketCount` can be set to a
+value in the range 0 to 10.  The default is 1, which will also be used
+if an invalid value is specified for the property.
 
 JDK-8369282: Distrust TLS server certificates anchored by Chunghwa ePKI Root CA
 ===============================================================================
@@ -198,14 +493,33 @@ security-libs/java.security:
 
 JDK-8244336: Restrict algorithms at JCE layer
 =============================================
-The `java.security` file defines a new security property,
-`jdk.crypto.disabledAlgorithms` that can be used to disable JCE/JCA
-cryptographic services algorithms. For now, no algorithms are disabled
-by default. Applications can set a system property of the same name to
-override security property's value.
+A security property named `jdk.crypto.disabledAlgorithms` has been
+added that can be used to disable JCE/JCA cryptographic services. The
+property accepts a comma-separated list of services, specified as
+Service.AlgorithName.  The current list of supported services is
+`Cipher`, `KeyStore`, `MessageDigest` and `Signature`.  Algorithms
+should be drawn from those specified by the Java Security Standard
+Algorithm Names Specification [0].  For example:
 
-See also "Disabled and Restricted Cryptographic Algorithms" at
-https://docs.oracle.com/en/java/javase/26/security/java-secure-socket-extension-jsse-reference-guide.html#GUID-0A438179-32A7-4900-A81C-29E3073E1E90
+jdk.crypto.disabledAlgorithms=Cipher.RSA/ECB/PKCS1Padding, MessageDigest.MD2
+
+would disable the RSA cipher when used with the ECB cipher algorithm
+mode and PKCS #1 algorithm padding, and the MD2 message digest
+algorithm.
+
+The default value for this security property is empty, which means
+that no algorithms are disabled out-of-the-box.  The value of the
+security property specified in `java.security` can be overridden by
+specifying a system property of the same name,
+`jdk.crypto.disabledAlgorithms`.  With the above example in place in
+`java.security`, running `java` as:
+
+$ java -Djdk.crypto.disabledAlgorithms=
+
+would cause these algorithms to be enabled for that run of the Java
+virtual machine.
+
+[0] https://docs.oracle.com/en/java/javase/25/docs/specs/security/standard-names.html
 
 New in release OpenJDK 17.0.18 (2026-01-20):
 ============================================
@@ -524,33 +838,102 @@ Notes on individual issues:
 
 core-libs/java.util:i18n:
 
-JDK-8345213: Changes to the Default Time Zone Detection on Debian-based Linux
-=============================================================================
-On Debian-based distributions OpenJDK now uses `/etc/localtime` to
-determine the default time zone instead of the deprecated
-`/etc/timezone`.
+JDK-8345213: JVM Prefers /etc/timezone Over /etc/localtime on Debian 12
+=======================================================================
+On older Debian-based GNU/Linux systems, the /etc/timezone file
+contained the name of the timezone in use on the system and so was
+preferred by OpenJDK for determining the default timezone returned by
+`TimeZone.getDefault()`.  Since Debian 3.1 in 2005, the /etc/localtime
+file has also been provided as either a link to or a copy of the zone
+data file provided by the tzdata database and this is now the
+preferred source of the system timezone following Debian's adoption of
+systemd.  OpenJDK's continued preference for /etc/timezone meant that
+it may be reading a timezone setting which was no longer updated on
+modern Debian systems. With this OpenJDK update, OpenJDK only reads
+/etc/localtime as on other GNU/Linux systems.
+
+See https://wiki.debian.org/TimeZoneChanges#Check_Configured_Timezone
+for more details.
+
+core-svc/javax.management:
+
+JDK-8341496: Improve JMX connections
+====================================
+With this release of OpenJDK, SSL connections created by
+`javax.rmi.ssl.SslRMIClientSocketFactory` now enable HTTPS-based
+endpoint identification by default.  This can be disabled by setting
+the new system property
+`jdk.rmi.ssl.client.enableEndpointIdentification` to false.
+
+security-libs/java.security:
+
+JDK-8368032: Enhance Certificate Checking
+=========================================
+OpenJDK supports the authorityInfoAccess extension in X.509
+certificates when the `com.sun.security.enableAIAcaIssuers` system
+property is set to `true`.  With this release of OpenJDK, a security
+and system property `com.sun.security.allowedAIALocations` is
+introduced which acts as a filter on the URIs specified in the
+extension.  By default, the property is empty, which will cause all
+URIs to be denied when the extension is enabled.  A value of `any` may
+be used to allow all URIs or a whitespace-separated list of filters
+may be used for more fine-grained control.  The syntax of the filters
+is specified in the `java.security` file.  A non-empty value for the
+system property takes precedence over the security property.
 
 security-libs/javax.net.ssl:
 
-JDK-8245545: Disabled TLS_RSA Cipher Suites
-===========================================
-This release disables the TLS_RSA cipher suites by default because
-they do not preserve forward-secrecy.  Users can re-enable them (at
-their own risk) by removing "TLS_RSA_*" from the
-`jdk.tls.disabledAlgorithms` security property in `java.security`.
-The newly-disabled cipher suites are TLS_RSA_WITH_AES_256_GCM_SHA384,
-TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_RSA_WITH_AES_256_CBC_SHA256,
-TLS_RSA_WITH_AES_128_CBC_SHA256, TLS_RSA_WITH_AES_256_CBC_SHA, and
-TLS_RSA_WITH_AES_128_CBC_SHA.
+JDK-8245545: Disable TLS_RSA cipher suites
+==========================================
+The TLS_RSA cipher suites do not preserve forward secrecy and are
+rarely used in practice. With this release, they are disabled by
+adding "TLS_RSA_*" to the `jdk.tls.disabledAlgorithms` security
+property in the `java.security` configuration file. Attempts to use
+these suites with this release will result in a
+`SSLHandshakeException` being thrown. Note that RSA cipher suites
+which use DES, 3DES, RC4 or NULL were already disabled prior to this
+change.
 
-JDK-8340321: Disabled SHA-1 in TLS 1.2 and DTLS 1.2 Handshake Signatures
-========================================================================
-This release disables deprecated SHA-1-based TLS 1.2 and DTLS 1.2
-handshake signatures by default.  Users can re-enable them (at their
-own risk) by removing `"rsa_pkcs1_sha1 usage HandshakeSignature,
-ecdsa_sha1 usage HandshakeSignature, dsa_sha1 usage
-HandshakeSignature"` from the `jdk.tls.disabledAlgorithms` security
-property in `java.security`.
+Users can, *at their own risk*, remove this restriction by modifying
+the `java.security` configuration file (or override it by using the
+`java.security.properties` system property) so "TLS_RSA_*" is no
+longer listed in the `jdk.tls.disabledAlgorithms` security property.
+
+This change results in the following cipher suites being disabled:
+
+* TLS_RSA_WITH_AES_256_GCM_SHA384
+* TLS_RSA_WITH_AES_256_CBC_SHA256
+* TLS_RSA_WITH_AES_256_CBC_SHA
+* TLS_RSA_WITH_AES_128_GCM_SHA256
+* TLS_RSA_WITH_AES_128_CBC_SHA256
+* TLS_RSA_WITH_AES_128_CBC_SHA
+
+JDK-8340321: Disable SHA-1 in TLS/DTLS 1.2 handshake signatures
+===============================================================
+
+RFC 9155 deprecates the use of SHA-1 in TLS 1.2 and DTLS 1.2. The
+algorithm has been regarded as insecure since 2005 and the first
+public attack was published on the 23rd of February, 2017.  With this
+release of OpenJDK, SHA-1 is disabled in TLS 1.2 and DTLS 1.2
+handshake signature by adding "rsa_pkcs1_sha1 usage
+HandshakeSignature, ecdsa_sha1 usage HandshakeSignature, dsa_sha1
+usage HandshakeSignature" to the `jdk.tls.disabledAlgorithms` security
+property in the `java.security` configuration file. Attempts to use
+these suites with this release will result in a
+`SSLHandshakeException` being thrown.
+
+Users can, *at their own risk*, remove this restriction by modifying
+the `java.security` configuration file (or override it by using the
+`java.security.properties` system property) so the handshake
+signatures are no longer listed in the `jdk.tls.disabledAlgorithms`
+security property.
+
+This change results in the following signature schemes being disabled
+for handshaking:
+
+* dsa_sha1
+* ecdsa_sha1
+* rsa_pkcs1_sha1
 
 New in release OpenJDK 17.0.17 (2025-10-21):
 ============================================
@@ -832,7 +1215,7 @@ JDK-8342075: HttpClient: improve HTTP/2 flow control checks
 ===========================================================
 This release of OpenJDK 21 enhances the HTTP/2 client implementation
 in `java.net.http.HttpClient` to report flow control errors back to
-the server. While this should be transparent in most cases, it may
+the server.  While this should be transparent in most cases, it may
 lead to streams being reset or connections being closed if connecting
 to a HTTP/2 server that does not correctly handle these errors.
 
@@ -841,12 +1224,12 @@ properties:
 
 * `jdk.httpclient.connectionWindowSize`
   - Specifies the HTTP/2 client connection window size in bytes.
-  - Default value: `2^26` (64 MiB)
+  - Default value: `67108864` (2^26, 64 MiB)
   - Range: `2^16-1` to `2^31-1`.
 
 * `jdk.httpclient.windowSize`
   - Specifies the HTTP/2 client stream window size in bytes.
-  - Default value: `16777216` (16 MiB)
+  - Default value: `16777216` (2^24, 16 MiB)
   - Range: `2^14` to `2^31-1`
 
 Specifying an invalid value leads to the default value being used.
@@ -858,11 +1241,11 @@ security-libs/javax.xml.crypto:
 JDK-8344137: Update XML Security for Java to 3.0.5
 ==================================================
 The XML Signature implementation has been updated to Apache Santuario
-3.0.5 from 3.0.3. This adds support for four new SHA-3 based ECDSA
+3.0.5 from 3.0.3.  This adds support for four new SHA-3 based ECDSA
 `SignatureMethod` algorithms.
 
 The `SignatureMethod` constants for these new algorithms are only
-available in Java 25. Users will instead need to use the string
+available in Java 25.  Users will instead need to use the string
 literals listed below to obtain instances of these new algorithms:
 
 * ECDSA_SHA3_224: http://www.w3.org/2021/04/xmldsig-more#ecdsa-sha3-224
@@ -916,12 +1299,12 @@ security-libs/javax.net.ssl:
 JDK-8341964: Add mechanism to disable different parts of TLS cipher suite
 =========================================================================
 The mechanisms in previous releases of OpenJDK for disabling TLS
-algorithms were either too broad or too specific.  Specifying an
-algorithm (e.g. "RSA") would disable all suites using that
-algorithm. The only alternative was to specify every suite. With this
-release, the `jdk.tls.disabledAlgorithms` security property supports
-wildcards for patterns that begin with "TLS_", so "TLS_RSA_*" can be
-used to disable all suites that start with "TLS_RSA_".
+algorithm were either too broad or too specific.  Specifying an
+algorithm (e.g. "RSA") would disable all suites using that algorithm.
+The only alternative was to specify every suite. With this release,
+the `jdk.tls.disabledAlgorithms` security property supports wildcards
+for patterns that begin with "TLS_", so "TLS_RSA_*" can be used to
+disable all suites that start with "TLS_RSA_".
 
 JDK-8349583: Add mechanism to disable signature schemes based on their TLS scope
 ================================================================================
@@ -945,13 +1328,13 @@ On Windows, the Java launcher in previous releases of OpenJDK used the
 ANSI version of the GetCommandLine() Win32 API call to obtain
 command-line arguments.  If the arguments contained Unicode characters
 that did not exist in the ANSI code page, they would be converted to
-other characters using the Windows "best fit" mapping [0]. This
+other characters using the Windows "best fit" mapping [0].  This
 mapping could introduce unexpected characters and differed between
 code pages. With this release, the JDK reads the command line
 arguments as Unicode and then converts them to the ANSI codepage
 itself, using the default replacement character for any that can not
-be mapped. For cases where such Unicode characters need to be retained
-as is, select UTF-8 in the Windows regional settings.
+be mapped.  For cases where such Unicode characters need to be
+retained as is, select UTF-8 in the Windows regional settings.
 
 [0] https://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WindowsBestFit/readme.txt
 
@@ -970,7 +1353,7 @@ security-libs/java.security:
 JDK-8313367: SunMSCAPI cannot read Local Computer certs w/o Windows elevation
 =============================================================================
 The SunMSCAPI provider in previous releases of OpenJDK required
-administrator privileges to access the local computer key store. The
+administrator privileges to access the local computer key store.  The
 store is now accessed with the `CERT_STORE_MAXIMUM_ALLOWED_FLAG` set
 so that non-elevated processes will be able to access the key store in
 read only mode.
@@ -978,7 +1361,7 @@ read only mode.
 JDK-8361212: Remove AffirmTrust root CAs
 ========================================
 The following root certificates from AffirmTrust, which were
-deactivated in the 11.0.25 release of October 2024, have been removed
+deactivated in the 17.0.13 release of October 2024, have been removed
 from the `cacerts` keystore:
 
 Alias name: affirmtrustcommercialca [jdk]

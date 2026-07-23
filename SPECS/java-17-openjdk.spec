@@ -324,7 +324,7 @@
 # New Version-String scheme-style defines
 %global featurever 17
 %global interimver 0
-%global updatever 19
+%global updatever 20
 %global patchver 0
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
@@ -364,7 +364,7 @@
 # Define IcedTea version used for SystemTap tapsets and desktop file
 %global icedteaver      6.0.0pre00-c848b93a8598
 # Define current Git revision for the FIPS support patches
-%global fipsver 62c0f885e30
+%global fipsver 821eb26f706
 %global javaver         %{featurever}
 %global newjavaver %{featurever}.%{interimver}.%{updatever}.%{patchver}
 
@@ -379,7 +379,7 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver 10
+%global buildver 8
 %global rpmrelease 1
 # Settings used by the portable build
 %global portablerelease 1
@@ -1125,8 +1125,8 @@ Requires: ca-certificates
 # Require javapackages-filesystem for ownership of /usr/lib/jvm/ and macros
 Requires: javapackages-filesystem
 # Require zone-info data provided by tzdata-java sub-package
-# 2026a required as of JDK-8379035
-Requires: tzdata-java >= 2026a
+# 2026b required as of JDK-8383175
+Requires: tzdata-java >= 2026b
 # for support of kernel stream control
 # libsctp.so.1 is being `dlopen`ed on demand
 Requires: lksctp-tools%{?_isa}
@@ -1250,9 +1250,9 @@ Provides: java-%{origin}-src%{?1} = %{epoch}:%{version}-%{release}
 
 Name:    java-%{javaver}-%{origin}
 Version: %{newjavaver}.%{buildver}
-Release: %{?eaprefix}%{rpmrelease}%{?extraver}%{?dist}
+Release: %{?eaprefix}%{portablerelease}.%{rpmrelease}%{?extraver}%{?dist}
 # Equivalent for the portable build
-%global prelease %{?eaprefix}%{portablerelease}%{?extraver}
+%global prelease %{?eaprefix}%{portablerelease}.0%{?extraver}
 # java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons
 # and this change was brought into RHEL-4. java-1.5.0-ibm packages
 # also included the epoch in their virtual provides. This created a
@@ -1458,8 +1458,8 @@ BuildRequires: java-%{featurever}-openjdk-portable-misc = %{epoch}:%{version}-%{
 %ifarch %{zero_arches}
 BuildRequires: libffi-devel
 %endif
-# 2026a required as of JDK-8379035
-BuildRequires: tzdata-java >= 2026a
+# 2026b required as of JDK-8383175
+BuildRequires: tzdata-java >= 2026b
 # Earlier versions have a bug in tree vectorization on PPC
 BuildRequires: gcc >= 4.8.3-8
 
@@ -1478,17 +1478,17 @@ BuildRequires: libpng-devel
 BuildRequires: zlib-devel
 %else
 # Version in src/java.desktop/share/native/libfreetype/include/freetype/freetype.h
-Provides: bundled(freetype) = 2.14.2
+Provides: bundled(freetype) = 2.14.3
 # Version in src/java.desktop/share/native/libsplashscreen/giflib/gif_lib.h
-Provides: bundled(giflib) = 6.1.2
+Provides: bundled(giflib) = 6.1.3
 # Version in src/java.desktop/share/native/libharfbuzz/hb-version.h
-Provides: bundled(harfbuzz) = 12.3.2
+Provides: bundled(harfbuzz) = 14.2.0
 # Version in src/java.desktop/share/native/liblcms/lcms2.h
-Provides: bundled(lcms2) = 2.17.0
+Provides: bundled(lcms2) = 2.19.1
 # Version in src/java.desktop/share/native/libjavajpeg/jpeglib.h
 Provides: bundled(libjpeg) = 6b
 # Version in src/java.desktop/share/native/libsplashscreen/libpng/png.h
-Provides: bundled(libpng) = 1.6.57
+Provides: bundled(libpng) = 1.6.58
 # Version in src/java.base/share/native/libzip/zlib/zlib.h
 Provides: bundled(zlib) = 1.3.2
 %endif
@@ -1850,19 +1850,6 @@ sh %{SOURCE12} %{top_level_dir_name}
 
 # Patch the JDK
 pushd %{top_level_dir_name}
-# This syntax is deprecated:
-#    %%patchN [...]
-# and should be replaced with:
-#    %%patch -PN [...]
-# For example:
-#    %%patch1001 -p1
-# becomes:
-#    %%patch -P1001 -p1
-# The replacement format suggested by recent (circa Fedora 38) RPM
-# deprecation messages:
-#    %%patch N [...]
-# is not backward-compatible with prior (circa RHEL-8) versions of
-# rpmbuild.
 %patch -P1 -p1
 %patch -P6 -p1
 # Add crypto policy and FIPS support
@@ -2500,6 +2487,35 @@ cjc.mainProgram(args)
 %endif
 
 %changelog
+* Mon Jul 13 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.20.0.8-1.1
+- Sync java-17-openjdk-portable.specfile from openjdk-portable-rhel-8
+- Add .0 to prelease
+
+* Mon Jul 13 2026 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.20.0.8-1.1
+- Sync NEWS from private-gnu_andrew-rhel-8.5-vanilla
+
+* Mon Jul 13 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.20.0.8-1.1
+- Set tzdata requires and build requires to 2026b
+- Set fipsver to 821eb26f706
+- Delete comments about patch macro syntax
+- Set bundled freetype version to 2.14.3
+- Set bundled giflib version to 6.1.3
+- Set bundled harfbuzz version to 14.2.0
+- Set bundled lcms2 version to 2.19.1
+- Set bundled libpng version to 1.6.58
+
+* Mon Jul 13 2026 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.20.0.8-1.1
+- Specify portablerelease and rpmrelease (always 0 for portables) in the Release field (OPENJDK-4876)
+
+* Mon Jul 13 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.20.0.8-1
+- Update to jdk-17.0.20+8 (GA)
+- Add to .gitignore openjdk-17.0.20+8.tar.xz
+- Set updatever to 20
+- Set buildver to 8
+- Update sources to openjdk-17.0.20+8.tar.xz
+- ** This tarball is embargoed until 2026-07-21 @ 1pm PT. **
+- Resolves: RHEL-188876
+
 * Thu Apr 16 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.19.0.10-1
 - Update to jdk-17.0.19+10 (GA)
 - Add to .gitignore openjdk-17.0.19+10.tar.xz
