@@ -325,7 +325,7 @@
 %global featurever 17
 %global interimver 0
 %global updatever 20
-%global patchver 0
+%global patchver 1
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
 # and this it is better to change it here, on single place
@@ -379,7 +379,7 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver 8
+%global buildver 1
 %global rpmrelease 1
 # Settings used by the portable build
 %global portablerelease 1
@@ -2487,6 +2487,17 @@ cjc.mainProgram(args)
 %endif
 
 %changelog
+* Fri Aug 07 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.20.1.1-1.1
+- Update to jdk-17.0.20.1+1 (GA)
+- Add to .gitignore openjdk-17.0.20.1+1.tar.xz
+- Set patchver to 1
+- Set buildver to 1
+- Update sources to openjdk-17.0.20.1+1.tar.xz
+- ** This tarball is embargoed until 2026-08-18 @ 1pm PT. **
+- Resolves: RHEL-235606
+- Update NEWS for jdk-17.0.20.1+1 (GA)
+- Sync java-17-openjdk-portable.specfile from openjdk-portable-rhel-8
+
 * Mon Jul 13 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.20.0.8-1.1
 - Sync java-17-openjdk-portable.specfile from openjdk-portable-rhel-8
 - Add .0 to prelease

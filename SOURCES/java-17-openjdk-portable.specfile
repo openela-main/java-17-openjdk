@@ -316,7 +316,7 @@
 %global featurever 17
 %global interimver 0
 %global updatever 20
-%global patchver 0
+%global patchver 1
 # buildjdkver is usually same as %%{featurever},
 # but in time of bootstrap of next jdk, it is featurever-1,
 # and this it is better to change it here, on single place
@@ -379,7 +379,7 @@
 %global origin_nice     OpenJDK
 %global top_level_dir_name   %{vcstag}
 %global top_level_dir_name_backup %{top_level_dir_name}-backup
-%global buildver 8
+%global buildver 1
 %global portablerelease 1
 %global rpmrelease 0
 #%%global tagsuffix     %%{nil}
@@ -1826,6 +1826,23 @@ done
 %endif
 
 %changelog
+* Fri Aug 07 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.20.1.1-1.0
+- Update to jdk-17.0.20.1+1 (GA)
+- Add to .gitignore openjdk-17.0.20.1+1.tar.xz
+- Set buildver to 1
+- Set is_ga to 1
+- Update sources to openjdk-17.0.20.1+1.tar.xz
+- ** This tarball is embargoed until 2026-08-18 @ 1pm PT. **
+- Update NEWS for jdk-17.0.20.1+1 (GA)
+
+* Thu Aug 06 2026 Thomas Fitzsimmons <fitzsim@redhat.com> - 1:17.0.20.1.0-0.1.0.ea
+- Update to jdk-17.0.20.1+0 (EA)
+- Add to .gitignore openjdk-17.0.20.1+0.tar.xz
+- Set patchver to 1
+- Set buildver to 0
+- Set is_ga to 0
+- Update sources to openjdk-17.0.20.1+0.tar.xz
+
 * Mon Jul 13 2026 Andrew Hughes <gnu.andrew@redhat.com> - 1:17.0.20.0.8-1.0
 - Update NEWS for jdk-17.0.20+8 (GA)
 

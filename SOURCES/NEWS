@@ -3,6 +3,19 @@ Key:
 JDK-X  - https://bugs.openjdk.java.net/browse/JDK-X
 CVE-XXXX-YYYY: https://cve.mitre.org/cgi-bin/cvename.cgi?name=XXXX-YYYY
 
+New in release OpenJDK 17.0.20.1 (2026-08-18):
+==============================================
+Live versions of these release notes can be found at:
+  * https://bit.ly/openjdk170201
+
+* Changes
+  - JDK-8333743: Change .jcheck/conf branches property to match valid branches
+  - JDK-8382471: Improve Resource Resolving
+  - JDK-8384708: Enhance HTTP Connections
+  - JDK-8386205: Enhance TLS server
+  - JDK-8388790: Bump update version for OpenJDK: jdk-17.0.20.1
+  - JDK-8389947: [17u] Remove designator DEFAULT_PROMOTED_VERSION_PRE=ea for release 17.0.20.1
+
 New in release OpenJDK 17.0.20 (2026-07-21):
 ============================================
 Live versions of these release notes can be found at:
